@@ -191,7 +191,7 @@ details[open] summary::before{content:"− "}
       .rvf select,.rvf input{font:inherit;font-size:14px;padding:6px 10px;border:1px solid var(--line);border-radius:8px;background:var(--paper);color:var(--ink);min-width:0;max-width:100%}
       .rvf input{flex:1 1 180px}
     </style>
-    <p class="note" style="margin:0;max-width:75ch">Все найденные отзывы с schulen.de, golocal, Yelp и 11880 в русском переводе, новые сверху. Немецкий заголовок отзыва в кавычках. Оценка 1 — лучшая, 6 — худшая (у golocal, Yelp, 11880 звёзды 1–5). У некоторых отзывов оценка и текст явно не сходятся, это отмечено в тексте. С апреля 2025 Google закрыл отзывы на карточках школ, поэтому отзывы «Google» здесь взяты с соседних пинов (спортзал, парковка, корпус Oberstufe), где ученики пишут о самой школе. Среди них есть шутки и мемы, они помечены в тексте.</p>
+    <p class="note" style="margin:0;max-width:75ch">Все найденные отзывы с schulen.de, golocal, Yelp и 11880 в русском переводе, новые сверху. Немецкий заголовок отзыва в кавычках. Оценка 1 — лучшая, 6 — худшая (у golocal, Yelp, 11880 звёзды 1–5). У некоторых отзывов оценка и текст явно не сходятся, это отмечено в тексте. С апреля 2025 Google закрыл отзывы на карточках школ, поэтому отзывы «Google» здесь взяты с соседних пинов (спортзал, парковка, корпус Oberstufe), где ученики пишут о самой школе. Среди них есть шутки и мемы, они помечены в тексте. Строки «Meta AI → …» — пересказ от Meta AI без ссылок на оригиналы, не проверены. Я искал эти обсуждения на foren.germany.ru и de4ru.com и не нашёл, поэтому строки с этих форумов особенно сомнительны. В поле оценки у них стоит тон (позитив / нейтрально / негатив), числовой оценки нет.</p>
     <div class="rvf">
       <select id="f-school" aria-label="Школа"></select>
       <div class="seg" id="f-grade" role="group" aria-label="Оценка">
@@ -259,7 +259,7 @@ const S = [
   reviews:[[2020,5.2,1],[2023,1.5,1],[2026,2.5,1]], rtag:"смешанные, тренд к лучшему",
   rnote:"3 отзыва от учеников: 2020 — 5,2 (субъективные оценки); 2023 — 1,5 (нормальная школа, приятные учителя); октябрь 2026 — 2,5 (молодые отзывчивые учителя, но ученицу травили с 5 по 7 класс, учителя сначала не реагировали, потом помогли).",
   facts:[["Учеников","748"],["Ganztag","offen"],["schulen.de","3,5★ · 3 отзыва (2020–2026)"],["Профиль","Musikzweig с 5 класса (усиленная музыка), по официальной брошюре Саарланда «Welche Schule für mein Kind»"]],
-  pros:["Единственная гимназия в городе с официальным Musikzweig с 5 класса","Свежий отзыв (10.2026) хвалит молодых учителей","Близко"],
+  pros:["Единственная гимназия в городе с официальным Musikzweig с 5 класса","Свежий отзыв (10.2026) хвалит молодых учителей","Близко","По постам школы (через Meta, не проверено): AG Textiles Gestalten, Kletter-AG, театр, оркестр — есть из чего выбрать творческой девочке","По посту школы от 10.08.2026 (через Meta, не проверено): пятиклассников встречают Paten (старшие школьники-наставники) — уточнить на дне открытых дверей"],
   cons:["Свежий отзыв описывает травлю с 5 класса и медленную реакцию учителей","Нет данных о спецподдержке по математике","Musikzweig — про музыку, а не про рисование и поделки"],
   url:"https://schulen.de/schulen/gymnasium-am-schloss-saarbruecken-14276/"},
  {id:"ms", name:"Marienschule", type:"gym", tlabel:"Гимназия · католическая (Bistum Trier)", addr:"Hohenzollernstraße 59a", km:"≈ 2,5 км",
@@ -551,12 +551,12 @@ const DFG_RAW=`08.03.2025|3,3|ученик 16+|Gute Sprachschule mit einigen Pro
 29.05.2019|1,5|родитель|Sehr gute Schule mit komplett bi-lingualer Ausrichtung|Must для всех в Großregion с европейской направленностью, которая даёт ученикам отличные перспективы и вызывает желание к Европе!`;
 
 const ALLRV=[];
-const SN={dfg:"Deutsch-Französisches Gymnasium",gas:"Gymnasium am Schloss",wgg:"Willi-Graf-Gymnasium",lp:"GemS Ludwigspark",bel:"GemS Bellevue",bru:"GemS Bruchwiese",rot:"Gymnasium am Rotenbühl",lgs:"Ludwigsgymnasium"};
+const SN={dfg:"Deutsch-Französisches Gymnasium",gas:"Gymnasium am Schloss",wgg:"Willi-Graf-Gymnasium",lp:"GemS Ludwigspark",bel:"GemS Bellevue",bru:"GemS Bruchwiese",rot:"Gymnasium am Rotenbühl",lgs:"Ludwigsgymnasium",ohg:"Otto-Hahn-Gymnasium (OHG)",ms:"Marienschule",ess:"Europäische Schule Saarland",wal:"Freie Waldorfschule",gen:"Общее по Saarbrücken (не про одну школу)"};
 function addRv(s,date,g,role,src,title,text){
   const y=+String(date).slice(-4);
   const d=String(date).split(".");
   const sort=y*10000+(d.length===3?+d[1]*100+ +d[0]:d.length===2?+d[0]*100:0);
-  const num=typeof g==="number"?g:(parseFloat(g)?6-parseFloat(g)*1:3);
+  const num=typeof g==="number"?g:(g==="позитив"?1.5:g==="негатив"?4.5:g==="нейтрально"?3:(parseFloat(g)?6-parseFloat(g)*1:3));
   ALLRV.push({s,date,y,sort,g,num,role,src,title,text});
 }
 DFG_RAW.split("\n").forEach(l=>{const p=l.split("|");addRv("dfg",p[0],parseFloat(p[1].replace(",",".")),p[2],"schulen.de",p[3],p.slice(4).join("|"));});
@@ -578,6 +578,18 @@ addRv("bru","08.09.2022",2.0,"родитель","schulen.de","Thema neu app onli
 addRv("rot","12.11.2025","5,3*","родитель / учитель","schulen.de","Viele engagierte Lehrerinnen und Lehrer","Много увлечённых учителей, хорошая подготовка к учёбе, Erasmus, много AG, новая столовая; «рекомендует». *Оценка 5,3 противоречит тексту: по данным Gemini, автор перепутал шкалу 1–6 со звёздами, текст полностью положительный.");
 addRv("lgs","06.02.2023","5★","—","11880","Bester Unterricht","«Лучшие уроки».");
 addRv("rot","19.11.2024","5★","родитель","golocal / Yelp","","У меня учились четверо детей в этой школе, в билингвальном потоке, их английский на высоте!");
+const MT="Meta AI → ";
+addRv("dfg","2024","позитив","анонимно (6 отзывов)",MT+"Google Places (не проверено, сомнительно)","","4,3 звезды, «бикультурная школа, отличная языковая подготовка». Сомнительно: по данным Gemini, отзывы на карточках школ в Google закрыты с апреля 2025.");
+addRv("dfg","2024","нейтрально","русскоязычные родители",MT+"Facebook-группа «Русские в Saarbrücken» (пересказ, не проверено)","","Сильная нагрузка, много домашки, но лучший французский и двойной диплом Abibac (DE+FR).");
+addRv("lgs","2023","нейтрально","родитель",MT+"русскоязычные форумы (пересказ, не проверено)","","Хвалят за дисциплину и подготовку к университету, критикуют старое здание и отсутствие современного спортзала.");
+addRv("gas","2022","нейтрально","—",MT+"stayfriends (не проверено)","","Первый Musikzweig в Saarland с 2001 года, сильный MINT, около 700 учеников, Ganztag 7:30–14:30, много домашки в музыкальном классе.");
+addRv("gas","2025","позитив","школа (официальный пост)",MT+"Instagram школы (это не отзыв, а описание внеклассного)","","Кружки (AG): Physik-AG, Bio-AG, оркестр, Kletter-AG, театр, Textiles Gestalten (рукоделие); сертификаты Cambridge, экскурсии; Schulfest с French Café и Escape Room.");
+addRv("wgg","2023","позитив","родители",MT+"Google Places (не проверено, сомнительно)","","Частная католическая, малые классы, внимание к ребёнку. Данные расходятся: число учеников «750–779» против 657 на schulen.de.");
+addRv("wgg","2024","нейтрально","русскоязычные родители",MT+"русскоязычные чаты (пересказ, не проверено)","","Выбирают осознанно за внимание к детям-мигрантам, поддержка DaZ, дисциплина, но «платно и религия». (У других источников школы Bistum Trier «без платы за обучение» — проверить.)");
+addRv("rot","2018","негатив","ученики",MT+"Facebook, запрос зелёных (пересказ, старый)","","Ученики сообщали о недопустимых недостатках здания.");
+addRv("wal","2023","негатив","родитель",MT+"foren.germany.ru (пересказ, не проверено)","","Многие родители были недовольны, дети приходили голодными. Помощь родителей школе не обязанность, всегда можно отказаться.");
+addRv("gen","2023","нейтрально","родитель",MT+"foren.germany.ru (пересказ, не проверено)","","«Gesamtschule Saarbrücken» (какая именно, не указано): ребёнок пишет, согласен ли с оценкой, хочет ли исправить, над чем работать. Мягкая система: кому-то нравится, кому-то нет.");
+addRv("gen","2023","нейтрально","русскоязычные родители",MT+"foren.germany.ru (пересказ, не проверено)","","Некоторые русские «хают» школу и возят в другую: много зависит от учителя и директора, не только от рейтинга.");
 const GW="Google (отзыв на пине рядом со школой: Turnhalle / парковка)";
 addRv("wgg","10.2026","5★","ученик",GW,"","(Шутка, не о школе.) Рекомендует парковку для посещения ближайшего пункта тестирования на ВИЧ.");
 addRv("wgg","09.2026","5★","ученик",GW,"","(Шутка/мем.) Прекрасная парковка, удобно припарковаться и пойти в ближайшую «развалюху» школу.");
@@ -608,7 +620,7 @@ function renderRv(){
     &&(!q||(r.text+" "+r.title+" "+r.role).toLowerCase().includes(q)));
   document.getElementById("rv-count").textContent="Показано "+rows.length+" из "+ALLRV.length;
   document.getElementById("reviews").innerHTML=rows.map(r=>{const c=typeof r.g==="number"?gcol(r.g):gcol(r.num);
-   return `<div class="it" style="border-left-color:${c}"><div class="m">${esc(r.date)} · <b>${esc(String(r.g).replace(".",","))}</b> · ${esc(SN[r.s])} · ${esc(r.role)} · ${esc(r.src)}</div><div>${esc(r.text)}</div>${r.title?`<q>«${esc(r.title)}»</q>`:""}</div>`}).join("")||'<p class="note">Нет отзывов по этим фильтрам.</p>';
+   return `<div class="it" style="border-left-color:${c}"><div class="m">${esc(r.date)} · <b>${esc(String(r.g).replace(".",","))}</b> · ${esc(SN[r.s])} · ${esc(r.role)} · ${esc(r.src)}</div><div>${esc(r.text)}</div>${r.title?`<q>«${esc(r.title)}»</q>`:""}</div>`}).join("")||'<p class="note">Нет отзывов по этим фильтрам. Если выбрана школа без отзывов (Otto-Hahn, Marienschule, Europäische Schule, Waldorf), то на schulen.de, golocal, 11880 и Google найти их не удалось.</p>';
 }
 document.getElementById("f-school").addEventListener("change",e=>{RF.school=e.target.value;renderRv()});
 document.getElementById("f-year").addEventListener("change",e=>{RF.year=e.target.value;renderRv()});
