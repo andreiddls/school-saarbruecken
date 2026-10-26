@@ -453,7 +453,7 @@ function renderList(){
     <div class="head">
       <div class="rank mono">${i+1}</div>
       <div class="name"><h3>${esc(s.name)}</h3>
-        <div class="meta"><span>${esc(s.tlabel)}</span><span>${esc(s.addr)}</span><span class="mono">${esc(s.km)}</span></div>
+        <div class="meta"><span>${esc(s.tlabel)}</span><a href="https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(s.name+", "+s.addr.replace(/\s*\(.*\)/,"")+", Saarbrücken")}" target="_blank" rel="noopener" title="Открыть в Google Maps">${esc(s.addr)} ↗</a><span class="mono">${esc(s.km)}</span></div>
         <div class="tags"><span class="verdict" style="color:${vc}">${vt}</span><span class="rtag">отзывы: ${esc(s.rtag)}</span><span class="rtag" title="гипотеза по типу школы">консервативность: ${"●".repeat(s.cvt)}${"○".repeat(5-s.cvt)} ${s.cvt}/5</span>${FR[s.id]?`<span class="rtag" style="background:var(--accent);color:var(--paper)">знакомые: ${esc(FR[s.id].join(", "))}</span>`:""}</div></div>
       <div class="fit"><b style="color:${vc}">${p}%</b><span>подходит</span></div>
     </div>
