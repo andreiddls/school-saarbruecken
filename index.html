@@ -82,8 +82,12 @@ details[open] summary::before{content:"− "}
 .body ul{margin:0;padding-left:18px;display:flex;flex-direction:column;gap:3px}
 .pros li::marker{content:"+  ";color:var(--good)}
 .cons li::marker{content:"–  ";color:var(--bad)}
-.facts{font-size:13.5px;display:grid;grid-template-columns:auto 1fr;gap:3px 12px}
-.facts dt{color:var(--muted)} .facts dd{margin:0}
+.body .wide{grid-column:1/-1}
+.facts{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:10px 14px}
+.fct{background:var(--bg);border:1px solid var(--line);border-radius:8px;padding:8px 12px;display:flex;flex-direction:column;gap:2px;min-width:0}
+.fct span{font-size:11.5px;text-transform:uppercase;letter-spacing:.05em;color:var(--muted);font-weight:600}
+.fct p{margin:0;font-size:14px;line-height:1.4}
+
 .conf{font-size:12px;color:var(--muted)}
 .timeline{grid-column:1/-1;display:flex;flex-direction:column;gap:6px}
 .timeline svg{width:100%;max-width:560px;height:auto;display:block}
@@ -460,7 +464,7 @@ function renderList(){
     <div class="bars">${CRIT.map(c=>`<div class="bar"><div style="display:flex;justify-content:space-between"><span>${c.n}</span><span class="mono">${s.s[c.k]}</span></div><div class="t"><i style="width:${s.s[c.k]/5*100}%;background:${col(s.s[c.k])}"></i></div></div>`).join("")}</div>
     <details data-id="${s.id}"${open.has(s.id)?" open":""}><summary>Подробнее и отзывы по годам</summary>
       <div class="body">
-        <div><h4>Факты</h4><dl class="facts">${s.facts.map(f=>`<dt>${esc(f[0])}</dt><dd>${esc(f[1])}</dd>`).join("")}</dl>
+        <div class="wide"><h4>Факты</h4><div class="facts">${s.facts.map(f=>`<div class="fct"><span>${esc(f[0])}</span><p>${esc(f[1])}</p></div>`).join("")}</div>
           <p class="conf">Надёжность данных: ${s.conf}. <a href="${s.url}" target="_blank" rel="noopener">Сайт / источник ↗</a></p></div>
         <div><h4>Плюсы для неё</h4><ul class="pros">${s.pros.map(x=>`<li>${esc(x)}</li>`).join("")}</ul></div>
         <div><h4>Риски</h4><ul class="cons">${s.cons.map(x=>`<li>${esc(x)}</li>`).join("")}</ul></div>
