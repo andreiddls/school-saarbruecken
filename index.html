@@ -1,0 +1,366 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<style>body{margin:0}[hidden]{display:none!important}</style>
+<title>Школа для 5 класса</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Unbounded:wght@500;700&family=Golos+Text:wght@400;500;600&family=JetBrains+Mono:wght@500&display=swap">
+<style>
+/* Layout: school-notebook page — Karo grid ground, ink-blue type, ranked cards with per-criterion bars, weight sliders on top */
+:root{
+  --bg:#f6f8fc; --grid:#e3e9f5; --paper:#ffffff; --ink:#1b2440; --muted:#5d6782; --line:#d7deec;
+  --accent:#2a46c8; --accent-soft:#e6ebfb; --margin:#d94a4a;
+  --good:#1f8a55; --mid:#c08a12; --bad:#c2453b;
+  --f-display:"Unbounded","Golos Text",system-ui,sans-serif;
+  --f-body:"Golos Text",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --f-mono:"JetBrains Mono",ui-monospace,Menlo,monospace;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#11152a; --grid:#1a2040; --paper:#181e38; --ink:#e7ebf7; --muted:#9aa4c4; --line:#2a3358;
+  --accent:#8ea2ff; --accent-soft:#232c55; --margin:#ff7a72; --good:#4fcf8c; --mid:#e7b54a; --bad:#ff7a72; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#11152a; --grid:#1a2040; --paper:#181e38; --ink:#e7ebf7; --muted:#9aa4c4; --line:#2a3358;
+  --accent:#8ea2ff; --accent-soft:#232c55; --margin:#ff7a72; --good:#4fcf8c; --mid:#e7b54a; --bad:#ff7a72; color-scheme:dark}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--ink);font-family:var(--f-body);font-size:15px;line-height:1.5;
+  background-image:linear-gradient(var(--grid) 1px,transparent 1px),linear-gradient(90deg,var(--grid) 1px,transparent 1px);
+  background-size:22px 22px}
+.wrap{max-width:1040px;margin:0 auto;padding-block:28px 60px;
+  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));
+  display:flex;flex-direction:column;gap:22px}
+h1,h2,h3{text-wrap:balance;margin:0}
+h1{font-family:var(--f-display);font-weight:700;font-size:clamp(24px,4.4vw,38px);line-height:1.15;letter-spacing:-.01em}
+h2{font-family:var(--f-display);font-weight:500;font-size:19px}
+.eyebrow{font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);font-weight:600}
+.mono{font-family:var(--f-mono);font-variant-numeric:tabular-nums}
+a{color:var(--accent)}
+header{display:flex;flex-direction:column;gap:12px;border-left:3px solid var(--margin);padding-left:16px}
+.chips{display:flex;flex-wrap:wrap;gap:6px}
+.chip{font-size:13px;padding:3px 10px;border-radius:999px;background:var(--paper);border:1px solid var(--line)}
+.chip.warn{border-color:var(--bad);color:var(--bad)}
+.panel{background:var(--paper);border:1px solid var(--line);border-radius:10px;padding:18px;display:flex;flex-direction:column;gap:14px}
+.weights{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px 22px}
+.w{display:flex;flex-direction:column;gap:4px;min-width:0}
+.w label{display:flex;justify-content:space-between;gap:8px;font-weight:500;font-size:14px}
+.w small{color:var(--muted);font-size:12px;line-height:1.35}
+input[type=range]{width:100%;accent-color:var(--accent)}
+.toolbar{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+.seg{display:flex;flex-wrap:wrap;gap:4px}
+button{font:inherit;cursor:pointer;border:1px solid var(--line);background:var(--paper);color:var(--ink);border-radius:8px;padding:6px 12px;font-size:14px}
+button[aria-pressed="true"]{background:var(--accent);border-color:var(--accent);color:var(--paper)}
+button:focus-visible,input:focus-visible,summary:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.list{display:flex;flex-direction:column;gap:12px}
+.card{background:var(--paper);border:1px solid var(--line);border-radius:10px;overflow:hidden}
+.card.top{border-color:var(--accent);box-shadow:0 0 0 1px var(--accent)}
+.head{display:grid;grid-template-columns:44px minmax(0,1fr) auto;gap:14px;align-items:center;padding:14px 16px}
+.rank{font-family:var(--f-display);font-size:22px;color:var(--muted);text-align:center}
+.card.top .rank{color:var(--accent)}
+.name{display:flex;flex-direction:column;gap:3px;min-width:0}
+.name h3{font-size:16.5px;font-weight:600}
+.meta{color:var(--muted);font-size:13px;display:flex;flex-wrap:wrap;gap:4px 12px}
+.tags{display:flex;flex-wrap:wrap;gap:6px}
+.fit{display:flex;flex-direction:column;align-items:flex-end;gap:2px}
+.fit b{font-family:var(--f-mono);font-size:24px;line-height:1}
+.fit span{font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.06em}
+.verdict{font-size:12px;font-weight:600;padding:2px 8px;border-radius:999px;border:1px solid currentColor}
+.rtag{font-size:12px;padding:2px 8px;border-radius:999px;background:var(--accent-soft);color:var(--ink)}
+.bars{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:8px 16px;padding:0 16px 14px 74px}
+.bar{display:flex;flex-direction:column;gap:3px;font-size:12px;color:var(--muted)}
+.bar .t{height:6px;border-radius:3px;background:var(--grid);overflow:hidden}
+.bar .t i{display:block;height:100%;border-radius:3px}
+details{border-top:1px solid var(--line)}
+summary{padding:10px 16px 10px 74px;cursor:pointer;color:var(--accent);font-weight:500;font-size:14px;list-style:none}
+summary::-webkit-details-marker{display:none}
+summary::before{content:"+ "}
+details[open] summary::before{content:"− "}
+.body{padding:0 16px 16px 74px;display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:14px 22px}
+.body > div{min-width:0}
+.body h4{margin:0 0 4px;font-size:13px;text-transform:uppercase;letter-spacing:.06em;color:var(--muted)}
+.body ul{margin:0;padding-left:18px;display:flex;flex-direction:column;gap:3px}
+.pros li::marker{content:"+  ";color:var(--good)}
+.cons li::marker{content:"–  ";color:var(--bad)}
+.facts{font-size:13.5px;display:grid;grid-template-columns:auto 1fr;gap:3px 12px}
+.facts dt{color:var(--muted)} .facts dd{margin:0}
+.conf{font-size:12px;color:var(--muted)}
+.timeline{grid-column:1/-1;display:flex;flex-direction:column;gap:6px}
+.timeline svg{width:100%;max-width:560px;height:auto;display:block}
+.timeline svg text{fill:var(--muted);font-family:var(--f-mono);font-size:10px}
+.timeline svg .axis{stroke:var(--line);stroke-width:1}
+.timeline p{margin:0;font-size:13.5px;max-width:70ch}
+.two{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:16px}
+.two .panel ul,.two .panel ol{margin:0;padding-left:20px;display:flex;flex-direction:column;gap:5px}
+.note{font-size:13px;color:var(--muted)}
+@media (max-width:560px){
+  .head{grid-template-columns:32px minmax(0,1fr) auto;gap:10px;padding:12px}
+  .bars,.body{padding-left:12px;padding-right:12px}
+  summary{padding-left:12px}
+}
+@media (prefers-reduced-motion:no-preference){.bar .t i{transition:width .3s}}
+</style>
+
+<div class="wrap">
+  <header>
+    <span class="eyebrow">Saarbrücken · переход в 5 класс · 2027/28</span>
+    <h1>Какая школа подойдёт дочери</h1>
+    <div class="chips">
+      <span class="chip">Дом: Mainzer Straße</span>
+      <span class="chip">творческая</span>
+      <span class="chip">маленькая, тихая</span>
+      <span class="chip">родной русский, немецкий выше среднего</span>
+      <span class="chip warn">математика — слабое место</span>
+    </div>
+    <p class="note" style="margin:0;max-width:70ch">Баллы 1–5 по каждому критерию — моя оценка по данным schulen.de, сайтам школ и открытым источникам. Где данных мало, это отмечено. Двигайте ползунки: рейтинг пересчитывается под то, что важнее именно вам.</p>
+  </header>
+
+  <section class="panel" aria-labelledby="wh">
+    <h2 id="wh">Что важнее</h2>
+    <div class="weights" id="weights"></div>
+    <div class="toolbar">
+      <div class="seg" id="filter" role="group" aria-label="Тип школы">
+        <button data-f="all" aria-pressed="true">Все</button>
+        <button data-f="gym" aria-pressed="false">Гимназии</button>
+        <button data-f="gems" aria-pressed="false">Gemeinschaftsschule (вместо Realschule)</button>
+        <button data-f="other" aria-pressed="false">Особые</button>
+      </div>
+      <button id="reset">Сбросить веса</button>
+    </div>
+    <p class="note" style="margin:0">Realschule в Саарланде нет с 2012 года: её и Hauptschule объединили в Gemeinschaftsschule. Там можно получить Mittlerer Bildungsabschluss после 10 класса (бывший Realschulabschluss) или дойти до Abitur.</p>
+  </section>
+
+  <section class="list" id="list" aria-label="Рейтинг школ"></section>
+
+  <section class="panel">
+    <h2>Как считаются отзывы</h2>
+    <p class="note" style="margin:0;max-width:75ch">Используются все отзывы с schulen.de с датами. Свежий отзыв весит больше: вес отзыва уменьшается вдвое каждые 2 года (отзыв 2026 года = 1, 2024 = ½, 2022 = ¼). Пачка отзывов за один год считается максимум за 3, чтобы массовая кампания (у DFG 27 отзывов за 29.05.2019) не перевешивала. Мало отзывов — балл стягивается к нейтральным 3. Под каждой школой есть график по годам и метка: хорошие отзывы держатся стабильно или есть только старые / только свежие.</p>
+  </section>
+
+  <div class="two">
+    <section class="panel">
+      <h2>Что спросить на дне открытых дверей</h2>
+      <ol>
+        <li>Как устроена адаптация 5 класса: Klassenlehrer-тандем, Paten из старших классов, Kennenlernfahrt?</li>
+        <li>Есть ли Förderunterricht по математике в 5–6 классе, в какие часы, кто ведёт, сколько детей в группе?</li>
+        <li>Что делают при Mobbing: Streitschlichter, Schulsozialarbeit, конкретная процедура? Сколько времени проходит от жалобы до реакции?</li>
+        <li>Сколько детей в классе 5 и сколько параллелей?</li>
+        <li>Кружки (AG) по Kunst, Theater, Chor, Fotografie — в каком классе можно начать?</li>
+        <li>Есть ли Lernzeit с учителем в Ganztag (домашка в школе)?</li>
+        <li>Есть ли дети с русским / Herkunftssprachlicher Unterricht Russisch?</li>
+        <li>Попросить посидеть на уроке в 5 классе (Hospitation) — многие школы разрешают.</li>
+        <li>Спросить родителей у входа или в родительских чатах района, как сейчас в школе: отзывов в интернете мало и они старые.</li>
+      </ol>
+    </section>
+    <section class="panel">
+      <h2>Как это устроено в Саарланде</h2>
+      <ul>
+        <li>Родители сами выбирают Gymnasium или Gemeinschaftsschule. Обязательная беседа с учителем Grundschule — это совет, а не запрет.</li>
+        <li>Обе дороги ведут к Abitur за 9 лет (гимназия снова G9, GemS — тоже 9 лет до Abitur).</li>
+        <li><b>Если возможен переезд:</b> выбирайте английский первым иностранным языком в 5 классе. В Саарланде многие школы предлагают первым французский, а почти во всех других землях первый — английский, и отставание по нему мешает переводу. Ещё учтите, что в Саксонии, Тюрингии, Берлине и некоторых других землях гимназия восьмилетняя (G8): при переводе программа может быть на полгода–год впереди.</li>
+        <li>В гимназии с 5 класса все предметы на повышенном уровне. В GemS есть уровни по предметам: при слабой математике это снимает давление.</li>
+        <li>Запись в 5 класс в 2026 году шла с 25.02 по 03.03, по записи, с Halbjahreszeugnis 4 класса. В 2027 ждите похожие сроки.</li>
+        <li>Дни открытых дверей обычно проходят с ноября по январь. Например, у Marienschule был 17.01.2026. Сейчас самое время смотреть сайты школ.</li>
+        <li>Гимназия может отказать при нехватке мест. DFG, ESS и Marienschule популярны, поэтому узнайте заранее правила приёма в каждой.</li>
+      </ul>
+    </section>
+  </div>
+
+  <section class="panel">
+    <h2>Источники</h2>
+    <p class="note" style="margin:0">schulen.de: ваши скриншоты и страницы отзывов (<a href="https://schulen.de/bewerten/14278/" target="_blank" rel="noopener">Willi-Graf</a>, <a href="https://schulen.de/bewerten/14277/" target="_blank" rel="noopener">DFG</a>, <a href="https://schulen.de/bewerten/14276/" target="_blank" rel="noopener">am Schloss</a>, <a href="https://schulen.de/bewerten/14212/" target="_blank" rel="noopener">Ludwigspark</a>, <a href="https://schulen.de/bewerten/14214/" target="_blank" rel="noopener">Bellevue</a>, <a href="https://schulen.de/bewerten/14215/" target="_blank" rel="noopener">Bruchwiese</a>, <a href="https://schulen.de/bewerten/14279/" target="_blank" rel="noopener">Rotenbühl</a>). У Otto-Hahn, Marienschule и Ludwigsgymnasium отзывов нет. Остальное: <a href="https://dfg-lfa.org/unsere-schule/infos-fur-saarl-grundschuleltern/franzosischunterricht-fur-anfanger-am-dfg/" target="_blank" rel="noopener">DFG: французский для начинающих</a>, <a href="https://www.saarland.de/mbk/DE/portale/bildungsserver/schulen-und-bildungswege/europaeische-schule-saarland" target="_blank" rel="noopener">Europäische Schule Saarland</a>, <a href="https://www.rotenbuehlgym.de/" target="_blank" rel="noopener">Gymnasium am Rotenbühl</a>, вакансии Bistum Trier о <a href="https://www.bistum-trier.de/export/sites/portal/schule-und-religionsunterricht/.galleries/dokumente/Stellenausschreibung_Willi_Graf_SB_Mathematik.pdf" target="_blank" rel="noopener">Willi-Graf</a> и <a href="https://www.bistum-trier.de/export/sites/portal/schule-und-religionsunterricht/.galleries/dokumente/Stellenausschreibung_Marienschule_SB_Chemie.pdf" target="_blank" rel="noopener">Marienschule</a>, <a href="https://www.uni-saarland.de/lehrstuhl/kay/schuelerlabor-nanobiolab/nanobiolab-science-schools.html" target="_blank" rel="noopener">NanoBioLab (Otto-Hahn)</a>, <a href="https://archiv35.miz.org/en/musical-life/institutions/schools-of-general-education-with-emphasis-on-music/saarland" target="_blank" rel="noopener">miz.org: школы с музыкальным уклоном</a>, <a href="https://ganztaegig-lernen.de/wp-content/uploads/2024/10/Gemeinschaftsschule_Bellevue.pdf" target="_blank" rel="noopener">GemS Bellevue: концепция Ganztag</a>, <a href="https://www.voelklingen.de/fileadmin/user_upload/Buergerservice/Amtliche_Bekanntmachungen/2026_08.pdf" target="_blank" rel="noopener">сроки записи 2026/27</a>. Расстояния со знаком ≈ — моя оценка по карте, остальные взяты с schulen.de.</p>
+  </section>
+</div>
+
+<script>
+const NOW=2026;
+const CRIT = [
+  {k:"safe", n:"Мягкая атмосфера", d:"небольшая школа, забота о тихих детях, защита от травли", w:30},
+  {k:"math", n:"Поддержка по математике", d:"Förderunterricht, Lernzeit, уровни, умеренный темп", w:25},
+  {k:"art",  n:"Творчество", d:"Kunst, Musik, Theater, AG", w:20},
+  {k:"dist", n:"Дорога", d:"сможет ходить сама, близко к Mainzer Str.", w:10},
+  {k:"lang", n:"Языки", d:"её сильная сторона: русский + немецкий", w:5},
+  {k:"rev",  n:"Отзывы", d:"с учётом свежести и постоянства; без отзывов = 3", w:10},
+  {k:"move", n:"Лёгкий переход при переезде", d:"обычная программа, которая есть в любой земле", w:15},
+];
+// reviews: [year, average grade (1 best … 6 worst), count]
+const S = [
+ {id:"wgg", name:"Willi-Graf-Gymnasium", type:"gym", tlabel:"Гимназия · католическая (Bistum Trier)", addr:"Sachsenweg 3", km:"0,8 км",
+  s:{safe:4.5,math:3.5,art:3,dist:4.5,lang:3.5}, conf:"средняя",
+  reviews:[[2020,1.3,1]], rtag:"один старый отзыв",
+  rnote:"Единственный отзыв, 2020 год, от родителя/учителя: «каждого ребёнка поддерживают — музыкальных, с особенностями, слабых в учёбе». Хороший знак, но шесть лет назад и в одиночку, поэтому балл почти нейтральный.",
+  facts:[["Учеников","657, 3 параллели"],["Ganztag","Ganztagsangebot"],["schulen.de","3★ · 1 отзыв (2020) · Note 1,3"],["Профиль","языки и музыка, Mathe-Naturwiss. профиль, MINT-freundlich"]],
+  pros:["Небольшая (3 параллели) — тихий ребёнок не потеряется","У Bistum-школ обычно сильная социальная работа","Единственный отзыв прямо хвалит поддержку слабых учеников","8–10 минут пешком"],
+  cons:["Свежих отзывов нет вообще — проверять на дне открытых дверей","Обычно ждут согласия на уроки религии, уточнить"],
+  url:"https://www.willi-graf-schulen.de"},
+ {id:"dfg", name:"Deutsch-Französisches Gymnasium", type:"gym", tlabel:"Гимназия · немецко-французская", addr:"Halbergstraße 112", km:"≈ 1,5 км",
+  s:{safe:2.5,math:3,art:3,dist:4,lang:5}, conf:"высокая",
+  reviews:[[2019,1.8,63],[2020,5.2,1],[2021,2.1,6],[2023,3.7,1],[2025,3.3,1]], rtag:"хорошие только в 2019, свежие хуже",
+  rnote:"72 отзыва, но 63 из них — 2019 год, 27 за один день (29.05.2019), похоже на кампанию. Уже в 2019 несколько родителей писали про травлю («Mobbing почти каждый день», школа не реагирует). Свежие: 2023 — 3,7 «токсичный климат, травля, давление»; 2025 — 3,3 «хорошая языковая школа, но слабая организация». Тренд вниз. На golocal/Yelp (через werkenntdenbesten): 3,6 из 5 по 5 отзывам, 2021–2023, среди них жалоба на зубрёжку (2021, 1★).",
+  facts:[["Учеников","1076"],["Ganztag","teilgebunden"],["schulen.de","5★ профиль · Note 2,0 · 72 отзыва"],["Французский","с нуля, 8 ч в неделю в 5 классе"]],
+  pros:["Языки 5★, Individuelle Förderung 4,5★ в профиле schulen.de","Для неё языки — сила: русский + немецкий + французский","Французский заранее знать не нужно, есть классы для начинающих","Двойной диплом (AbiBac)"],
+  cons:["Большая (1000+), легко потеряться","Повторяющиеся жалобы на травлю (2019, 2023) — главный риск для тихого ребёнка","8 часов французского отнимают силы у математики","Свежие отзывы заметно хуже старых"],
+  url:"https://dfg-lfa.org"},
+ {id:"lp", name:"Gemeinschaftsschule Ludwigspark", type:"gems", tlabel:"Gemeinschaftsschule · gebundener Ganztag", addr:"Ziegelstraße 17", km:"1,2 км",
+  s:{safe:3.5,math:4.5,art:3,dist:4.5,lang:2.5}, conf:"средняя",
+  reviews:[[2021,1.0,1]], rtag:"один отзыв, 2021",
+  rnote:"Один отзыв 2021 года, «Sehr gut», без подробностей. Высокое место на schulen.de держится на одном голосе.",
+  facts:[["Учеников","463, 17 классов, 5–13"],["Ganztag","gebunden"],["schulen.de","3★ · 1 отзыв (2021) · Note 1,0"],["Abitur","G9 через общую Oberstufe Stadtmitte"]],
+  pros:["Уровни по математике + Lernzeit в школе = меньше стресса","Небольшая","Abitur тоже возможен (9 лет)"],
+  cons:["Состав учеников смешаннее, тихому ребёнку может быть сложнее","Творческий профиль средний","Отзывов почти нет"],
+  url:"https://schulen.de/schulen/gemeinschaftsschule-ludwigspark-saarbruecken-14212/"},
+ {id:"gas", name:"Gymnasium am Schloss", type:"gym", tlabel:"Гимназия", addr:"Spichererbergstraße 15", km:"1,1 км",
+  s:{safe:2.5,math:3,art:4,dist:4.5,lang:3.5}, conf:"средняя",
+  reviews:[[2020,5.2,1],[2023,1.5,1],[2026,2.5,1]], rtag:"смешанные, тренд к лучшему",
+  rnote:"3 отзыва от учеников: 2020 — 5,2 (субъективные оценки); 2023 — 1,5 (нормальная школа, приятные учителя); октябрь 2026 — 2,5 (молодые отзывчивые учителя, но ученицу травили с 5 по 7 класс, учителя сначала не реагировали, потом помогли).",
+  facts:[["Учеников","748"],["Ganztag","offen"],["schulen.de","3,5★ · 3 отзыва (2020–2026)"],["Профиль","Sprachen, Sport, Musik 3,5★; есть в каталоге miz.org (музыкальный уклон)"]],
+  pros:["Самая «музыкальная» гимназия рядом","Свежий отзыв (10.2026) хвалит молодых учителей","Близко"],
+  cons:["Свежий отзыв описывает травлю с 5 класса и медленную реакцию учителей","Нет данных о спецподдержке по математике"],
+  url:"https://schulen.de/schulen/gymnasium-am-schloss-saarbruecken-14276/"},
+ {id:"ms", name:"Marienschule", type:"gym", tlabel:"Гимназия · католическая (Bistum Trier)", addr:"Hohenzollernstraße 59a", km:"≈ 2,5 км",
+  s:{safe:4,math:3.5,art:3,dist:3,lang:3.5}, conf:"низкая",
+  reviews:[], rtag:"отзывов нет",
+  rnote:"На schulen.de нет ни одного отзыва. Нужно спрашивать родителей лично.",
+  facts:[["Учеников","~800, 4 параллели"],["Ganztag","Nachmittagsbetreuung"],["schulen.de","0 отзывов"],["Профиль","естественно-научная и языковая ветки, MINT-freundlich"]],
+  pros:["Бистумская школа: ценности, забота, структура","На дне открытых дверей 4-классники сидят на уроках 5 класса, удобно проверить"],
+  cons:["Дальше: Alt-Saarbrücken, через реку","Больше, чем Willi-Graf","Открытых отзывов нет"],
+  url:"https://www.marienschule-sb.de"},
+ {id:"ess", name:"Europäische Schule Saarland", type:"other", tlabel:"Государственная европейская школа · бесплатно", addr:"Paul-Schmook-Straße 68 (Malstatt)", km:"≈ 4 км",
+  s:{safe:4,math:3.5,art:3,dist:2.5,lang:4.5}, conf:"низкая",
+  reviews:[], rtag:"отзывов нет",
+  rnote:"Школа открылась в 2021 году, отзывов на schulen.de нет.",
+  facts:[["Учеников","~300 (на всю школу, с 1 класса)"],["Ganztag","gebunden"],["Секции","немецкая и английская, европейский Abitur"],["Вход в 5 класс","обещают индивидуальную поддержку новичкам"]],
+  pros:["Маленькая, многоязычная среда — ребёнок из другой языковой среды здесь норма","Gebundener Ganztag с поддержкой","Бесплатная"],
+  cons:["Ехать на автобусе ~20–25 мин","Мест мало, бывает лист ожидания","Молодая школа, отзывов нет"],
+  url:"https://www.saarland.de/mbk/DE/portale/bildungsserver/schulen-und-bildungswege/europaeische-schule-saarland"},
+ {id:"ohg", name:"Otto-Hahn-Gymnasium", type:"gym", tlabel:"Гимназия · сильный MINT", addr:"Landwehrplatz 3", km:"0,4 км",
+  s:{safe:3,math:2.5,art:2.5,dist:5,lang:3.5}, conf:"средняя",
+  reviews:[], rtag:"отзывов нет",
+  rnote:"На schulen.de нет ни одного отзыва.",
+  facts:[["Учеников","654"],["Ganztag","offen"],["schulen.de","3★ · 0 отзывов"],["Профиль","Sprachen 3,5★, MINT 3★; есть Sprachförderung и Begabtenförderung"]],
+  pros:["Ближе всех, 5 минут пешком","Есть Sprachförderung","Новый партнёр NanoBioLab университета"],
+  cons:["Ставка на сильный MINT: для неё это значит давление по математике","Творческий профиль не выражен"],
+  url:"https://schulen.de/schulen/"},
+ {id:"bru", name:"Gemeinschaftsschule Bruchwiese", type:"gems", tlabel:"Gemeinschaftsschule", addr:"Sachsenweg 10", km:"≈ 0,8 км",
+  s:{safe:3,math:4,art:3,dist:4,lang:2.5}, conf:"низкая",
+  reviews:[[2022,2.0,1]], rtag:"один отзыв, 2022",
+  rnote:"Один отзыв 2022 года (2,0) — про то, что школа неудобно общается с глухим родителем. О классе и учёбе ничего.",
+  facts:[["Ganztag","не указан как gebunden — уточнить"],["schulen.de","1 отзыв (2022)"],["Соседство","рядом с Willi-Graf (Sachsenweg 3)"]],
+  pros:["Уровни по математике, как в любой GemS","Близко, около 10 минут пешком"],
+  cons:["Почти нет данных о школе — нужен визит"],
+  url:"https://schulen.de/schulen/gemeinschaftsschule-bruchwiese-saarbruecken-14215/"},
+ {id:"wal", name:"Freie Waldorfschule", type:"other", tlabel:"Waldorf · частная, взнос родителей", addr:"Schulstraße 11", km:"6,5 км",
+  s:{safe:4,math:3.5,art:5,dist:1,lang:2.5}, conf:"средняя",
+  reviews:[], rtag:"отзывов нет",
+  rnote:"На schulen.de отзывов недостаточно для оценки.",
+  facts:[["Учеников","406"],["Ganztag","нет"],["schulen.de","2★ · отзывов мало"],["Особенность","без оценок в средней школе, много искусства и ремесла"]],
+  pros:["Максимум творчества, без гонки за оценками","Класс идёт вместе много лет, мягкая социальная среда"],
+  cons:["6,5 км, нет Ganztag","Математика мягкая, отставание к Abitur потом догонять","Платная (взнос по доходу)"],
+  url:"https://schulen.de/schulen/"},
+ {id:"rot", name:"Gymnasium am Rotenbühl", type:"gym", tlabel:"Гимназия · Eliteschule des Sports", addr:"Neugrabenweg 66", km:"≈ 2 км",
+  s:{safe:3,math:3,art:2,dist:3.5,lang:3.5}, conf:"средняя",
+  reviews:[], rtag:"1 отзыв 2025, противоречивый",
+  rnote:"Один отзыв 11.2025: текст очень хвалит («много увлечённых учителей, много AG, рекомендую»), а оценка стоит 5,3. Похоже на ошибку при вводе, поэтому в балл он не включён.",
+  facts:[["Ветки с 5 класса","Europazweig и Sportzweig (по тесту)"],["Языки","билингвальный английский с 7 класса"],["schulen.de","1 отзыв (2025)"],["Профиль","спорт"]],
+  pros:["Обычная Europa-ветка без спорта тоже есть","Свежий отзыв хвалит учителей и AG"],
+  cons:["Культура школы спортивная, творческого профиля нет"],
+  url:"https://www.rotenbuehlgym.de"},
+ {id:"bel", name:"Gemeinschaftsschule Bellevue", type:"gems", tlabel:"Gemeinschaftsschule · gebundener Ganztag", addr:"Am Hagen 30", km:"1,9 км",
+  s:{safe:2,math:4,art:3.5,dist:3.5,lang:2.5}, conf:"средняя",
+  reviews:[[2023,3.25,2],[2024,4.85,2]], rtag:"свежие отзывы плохие",
+  rnote:"4 отзыва за 2023–2024: три негативных от учеников (грубость между детьми, грязь, поджоги в туалете, «катастрофа» в 11.2024) и один хороший от родителя (2023: «никого не бросают, хороший продлёнка»). Самые свежие — самые плохие.",
+  facts:[["Учеников","589"],["Ganztag","gebunden"],["schulen.de","3,5★ · 4 отзыва (2023–24)"],["Профиль","Digital 3,5★, Kunst 3★; проектное обучение, тьюторы"]],
+  pros:["Проектный Ganztag, работа с тьюторами","Kunst & Kreativ лучше, чем у Ludwigspark"],
+  cons:["Свежие отзывы учеников описывают грубую среду","Для тихого ребёнка — высокий риск"],
+  url:"https://schulen.de/schulen/gemeinschaftsschule-bellevue-saarbruecken-14214/"},
+];
+
+function revScore(r){
+  if(!r.length) return 3;
+  let sw=0, sx=0;
+  r.forEach(([y,g,n])=>{const w=Math.min(n,3)*Math.pow(.5,(NOW-y)/2); const s=Math.max(1,Math.min(5,5-(g-1)*.8)); sw+=w; sx+=w*s;});
+  return Math.round((sx+3)/(sw+1)*10)/10;
+}
+S.forEach(s=>s.s.rev=revScore(s.reviews));
+const MOVE={
+  wgg:[4.5,"обычная гимназия Саарланда, перевод в гимназию другой земли без проблем"],
+  ms:[4.5,"обычная гимназия, перевод простой"],
+  gas:[4.5,"обычная гимназия, перевод простой"],
+  ohg:[4.5,"обычная гимназия, перевод простой"],
+  rot:[4.5,"Europazweig — обычная программа (Sportzweig — нет)"],
+  lp:[3.5,"в других землях это Gesamtschule / Realschule / Oberschule; в гимназию — только при хороших оценках на E-уровне"],
+  bru:[3.5,"как у любой GemS: аналоги есть везде, но перевод в гимназию зависит от оценок"],
+  bel:[3.5,"как у любой GemS: аналоги есть везде, но перевод в гимназию зависит от оценок"],
+  dfg:[2.5,"особая двуязычная программа: французский 8 ч, английский позже, чем в обычных гимназиях. Немецко-французских гимназий в Германии всего несколько (например, Freiburg)"],
+  ess:[3,"европейская программа (European Baccalaureate); переход в другую Европейскую школу простой, в обычную гимназию — с адаптацией"],
+  wal:[1.5,"своя программа без оценок, математика идёт в другом темпе; перевод в обычную гимназию тяжёлый. Проще только в другую вальдорфскую школу"],
+};
+S.forEach(s=>{const m=MOVE[s.id]; s.s.move=m[0]; s.facts.push(["При переезде",m[1]]);});
+
+const LS="schulwahl-weights-v1";
+let W={}; CRIT.forEach(c=>W[c.k]=c.w);
+try{const s=JSON.parse(localStorage.getItem(LS)||"null"); if(s) Object.assign(W,s);}catch(e){}
+let F="all";
+
+function fit(s){let t=0,ws=0;CRIT.forEach(c=>{t+=s.s[c.k]*W[c.k];ws+=W[c.k]});return ws?Math.round((t/ws-1)/4*100):0}
+function col(v){return v>=4?"var(--good)":v>=3?"var(--mid)":"var(--bad)"}
+function gcol(g){return g<=2.2?"var(--good)":g<=3.5?"var(--mid)":"var(--bad)"}
+function verdict(p){return p>=72?["отлично подходит","var(--good)"]:p>=60?["стоит посмотреть","var(--mid)"]:["скорее нет","var(--bad)"]}
+const esc=t=>String(t).replace(/[&<>"]/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[m]));
+
+function timeline(r){
+  const y0=2019,y1=2026,x=y=>20+(y-y0)*(280/(y1-y0));
+  const gy=g=>8+(g-1)*(44/5); // grade 1 at top, 6 at bottom
+  let h=`<svg viewBox="0 0 320 78" role="img" aria-label="Отзывы по годам">`;
+  [1,3.5,6].forEach(g=>h+=`<line class="axis" x1="20" x2="300" y1="${gy(g)}" y2="${gy(g)}" stroke-dasharray="${g===3.5?'2 3':'0'}"/>`);
+  h+=`<text x="2" y="${gy(1)+3}">1</text><text x="2" y="${gy(6)+3}">6</text>`;
+  for(let y=y0;y<=y1;y++) h+=`<text x="${x(y)}" y="74" text-anchor="middle">${String(y).slice(2)}</text>`;
+  r.forEach(([y,g,n])=>{const rr=Math.min(4+Math.sqrt(n)*1.6,15);
+    h+=`<circle cx="${x(y)}" cy="${gy(g)}" r="${rr}" fill="${gcol(g)}" fill-opacity=".85"/>`;
+    if(n>1) h+=`<text x="${x(y)+rr+3}" y="${gy(g)+3}">×${n}</text>`;});
+  if(!r.length) h+=`<text x="160" y="36" text-anchor="middle">нет отзывов с оценкой</text>`;
+  return h+`</svg>`;
+}
+
+function renderWeights(){
+  document.getElementById("weights").innerHTML=CRIT.map(c=>`
+   <div class="w"><label for="w-${c.k}"><span>${c.n}</span><span class="mono" id="v-${c.k}">${W[c.k]}</span></label>
+   <input type="range" id="w-${c.k}" min="0" max="40" step="5" value="${W[c.k]}" data-k="${c.k}">
+   <small>${c.d}</small></div>`).join("");
+  document.querySelectorAll("#weights input").forEach(i=>i.addEventListener("input",e=>{
+    W[e.target.dataset.k]=+e.target.value; document.getElementById("v-"+e.target.dataset.k).textContent=e.target.value;
+    try{localStorage.setItem(LS,JSON.stringify(W))}catch(_){}
+    renderList();
+  }));
+}
+const open=new Set();
+function renderList(){
+  const rows=S.filter(s=>F==="all"||s.type===F).map(s=>({s,p:fit(s)})).sort((a,b)=>b.p-a.p);
+  document.getElementById("list").innerHTML=rows.map(({s,p},i)=>{const [vt,vc]=verdict(p);return `
+  <article class="card${i===0?" top":""}">
+    <div class="head">
+      <div class="rank mono">${i+1}</div>
+      <div class="name"><h3>${esc(s.name)}</h3>
+        <div class="meta"><span>${esc(s.tlabel)}</span><span>${esc(s.addr)}</span><span class="mono">${esc(s.km)}</span></div>
+        <div class="tags"><span class="verdict" style="color:${vc}">${vt}</span><span class="rtag">отзывы: ${esc(s.rtag)}</span></div></div>
+      <div class="fit"><b style="color:${vc}">${p}%</b><span>подходит</span></div>
+    </div>
+    <div class="bars">${CRIT.map(c=>`<div class="bar"><div style="display:flex;justify-content:space-between"><span>${c.n}</span><span class="mono">${s.s[c.k]}</span></div><div class="t"><i style="width:${s.s[c.k]/5*100}%;background:${col(s.s[c.k])}"></i></div></div>`).join("")}</div>
+    <details data-id="${s.id}"${open.has(s.id)?" open":""}><summary>Подробнее и отзывы по годам</summary>
+      <div class="body">
+        <div><h4>Факты</h4><dl class="facts">${s.facts.map(f=>`<dt>${esc(f[0])}</dt><dd>${esc(f[1])}</dd>`).join("")}</dl>
+          <p class="conf">Надёжность данных: ${s.conf}. <a href="${s.url}" target="_blank" rel="noopener">Сайт / источник ↗</a></p></div>
+        <div><h4>Плюсы для неё</h4><ul class="pros">${s.pros.map(x=>`<li>${esc(x)}</li>`).join("")}</ul></div>
+        <div><h4>Риски</h4><ul class="cons">${s.cons.map(x=>`<li>${esc(x)}</li>`).join("")}</ul></div>
+        <div class="timeline"><h4>Отзывы по годам (Note 1 — лучшая, 6 — худшая)</h4>${timeline(s.reviews)}<p>${esc(s.rnote)}</p></div>
+      </div></details>
+  </article>`}).join("");
+  document.querySelectorAll("#list details").forEach(d=>d.addEventListener("toggle",()=>{d.open?open.add(d.dataset.id):open.delete(d.dataset.id)}));
+}
+document.getElementById("filter").addEventListener("click",e=>{const b=e.target.closest("button");if(!b)return;F=b.dataset.f;
+  document.querySelectorAll("#filter button").forEach(x=>x.setAttribute("aria-pressed",x===b));renderList();});
+document.getElementById("reset").addEventListener("click",()=>{CRIT.forEach(c=>W[c.k]=c.w);try{localStorage.removeItem(LS)}catch(_){}renderWeights();renderList();});
+renderWeights();renderList();
+</script>
+
+</html>
