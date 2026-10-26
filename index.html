@@ -155,7 +155,7 @@ summary{padding:6px 16px 6px 74px;font-size:13px}
     <h1>Какая школа подойдёт дочери</h1>
     
     <p class="note" style="margin:0;max-width:70ch">Баллы 1–5 по каждому критерию — моя оценка по данным schulen.de, сайтам школ и открытым источникам. Где данных мало, это отмечено. Двигайте ползунки: рейтинг пересчитывается под то, что важнее именно вам.</p>
-  <p class="note mono" id="upd" style="margin:0">Обновлено: 26.10.2026 13:03 (время Берлина)</p>
+  <p class="note mono" id="upd" style="margin:0">Обновлено: 26.10.2026 13:07 (время Берлина)</p>
   </header>
 
   <details class="panel wpanel" id="wdet"><summary><h2 id="wh" style="display:inline;margin:0">Что важнее: веса и фильтры</h2> <span class="note" id="wstate"></span> <button type="button" id="wreset2" hidden>вернуть по умолчанию</button></summary>
@@ -480,9 +480,41 @@ const CAL=[
  ["2027-03-05","пт 05.03.2027","государственные школы","Жеребьёвка (Losverfahren), если мест не хватает","по документам МБК"],
  ["2027-08-09","09.–10.08.2027","все","Первый учебный день 09.08.2027, не поданные документы до 10.08.2027","по данным школ"]
 ];
+function costsHtml(id,hidAttr){
+  const c=COSTS[id];
+  let tr;
+  if(id==="wal")tr="У школы свой школьный автобус (расписание на сайте школы), цена не найдена.";
+  else if((ROUTE[id]||[0])[0]>=4)tr="Школа в пешей доступности или рядом, проездной, скорее всего, не нужен.";
+  else tr="Нужен проездной: Junge-Leute-Ticket для школьников 44,40 €/мес по подписке (saarVV, нужна регистрация в Саарланде и справка из школы) или обычная школьная месячная карта от 57,60 €.";
+  const rows=[["Минимум в год (без продлёнки и обеда)",MINC[id]],["Обучение",c.sg],["Продлёнка / Ganztag",c.gt],["Обед",c.meal],["Книги и медиа (LSMS)",c.med],["Проезд",tr]];
+  return `<div class="tp" data-tab="costs"${hidAttr}><h4>Сколько это стоит (ориентир, 26.10.2026)</h4><div style="overflow-x:auto"><table class="ct" style="min-width:420px">${rows.map(r=>`<tr><td><b>${esc(r[0])}</b></td><td>${esc(r[1])}</td></tr>`).join("")}</table></div><p class="note" style="margin:8px 0 0">«Не найдено» значит, что сумма нигде не опубликована: спрашивайте школу. LSMS — общий сбор Саарланда с 2026/27, 160 € в год на ученика (130 € книги и тетради, 30 € цифровые программы). Освобождены семьи с рядом пособий. Общая таблица по всем школам есть в панели «Сколько это стоит» над списком.</p></div>`;
+}
+function datesHtml(id,hidAttr){
+  const state=["gas","rot","lgs","ohg","dfg","lp","bel","bru"];
+  const key={gas:"Gymnasium am Schloss",rot:"Rotenbühl",lgs:"Ludwigsgymnasium",ohg:"Otto-Hahn",dfg:"DFG",ess:"Europäische",wgg:"Willi-Graf",wrs:"Willi-Graf"};
+  const generic=["все школы","Саарланд","все Grundschulen","все"];
+  const rows=CAL.filter(r=>{
+    const sc=r[2];
+    if(key[id]&&sc.includes(key[id])){
+      if(id==="wgg"&&sc==="Willi-Graf-Realschule")return false;
+      if(id==="wrs"&&sc==="Willi-Graf-Gymnasium")return false;
+      return true;
+    }
+    if(generic.includes(sc))return true;
+    if(sc.startsWith("государственные"))return state.includes(id);
+    return false;
+  });
+  return `<div class="tp" data-tab="dates"${hidAttr}><h4>Дни открытых дверей и подача документов (приём 2027/28)</h4><p style="margin:0 0 10px;max-width:75ch;font-size:14px">${esc(DATES[id]||"Дат не найдено, звоните в школу.")}</p><div style="overflow-x:auto"><table class="ct" style="min-width:520px"><tr><th>Когда</th><th>Что</th><th>Примечание</th></tr>${rows.map(r=>`<tr><td class="mono"><b>${esc(r[1])}</b></td><td>${esc(r[3])}${r[2]!==(key[id]||"")&&!r[2].includes(key[id]||"~~")?`<br><span class="note">${esc(r[2])}</span>`:""}</td><td>${esc(r[4])}</td></tr>`).join("")}</table></div></div>`;
+}
 function renderCal(){
   const box=document.getElementById("calbox"); if(!box)return;
   box.innerHTML=`<div style="overflow-x:auto"><table class="ct" style="min-width:680px"><tr><th>Когда</th><th>Школа</th><th>Что</th><th>Примечание</th></tr>${CAL.map(r=>`<tr><td class="mono"><b>${esc(r[1])}</b></td><td>${esc(r[2])}</td><td>${esc(r[3])}</td><td>${esc(r[4])}</td></tr>`).join("")}</table></div>
+  <h4 style="margin:14px 0 4px;font-size:12px;text-transform:uppercase;letter-spacing:.06em;color:var(--muted)">Чего ещё нет</h4>
+  <ul style="margin:0 0 8px;padding-left:20px;display:flex;flex-direction:column;gap:3px;font-size:13.5px">
+    <li><b>Marienschule, GemS Ludwigspark, Bruchwiese, Bellevue, Montessori:</b> на 2027/28 даты пока не опубликованы. Для Marienschule и Ludwigspark в карточке указаны прошлогодние (Marienschule: день открытых дверей в середине января, собеседования с конца января до начала февраля). Для остальных нужно звонить.</li>
+    <li><b>Gymnasium am Schloss, Ludwigsgymnasium:</b> у части мероприятий нет времени или места, проверяйте на сайте перед поездкой.</li>
+    <li><b>Waldorf:</b> приём в 5 класс только как Quereinstieg при свободном месте, письменная заявка и лист ожидания.</li>
+  </ul>
   <p class="note" style="margin:8px 0 0">Собрано 26.10.2026 с сайтов школ и официального плана Саарланда (Terminplanung 2026/27 от 18.08.2026). Школы Marienschule, GemS Ludwigspark, Bruchwiese, Bellevue и Montessori на 2027/28 пока не опубликовали даты, ориентируйтесь на прошлогодние (в карточках школ). Время и место проверяйте на сайте школы перед поездкой. Приходите к назначенной записи заранее: в большинстве государственных школ подача только по предварительной записи.</p>`;
 }
 const PUB={sg:"0",gt:"offen: необязательна, цена не найдена",meal:"не найдено (ориентир 4–6 €, по двум другим школам)",med:"160 €/год (LSMS с 2026/27)"};
@@ -613,7 +645,7 @@ Object.assign(MINC,{mon:"Schulgeld не найден",wrs:"160 € (если у�
 Object.assign(DEM,{mon:"Вход в 5 класс не подтверждён, места и правила приёма спросить в школе.",wrs:"Вход в 5 класс есть: собеседование около февраля, решает комиссия. Порога оценок не указано."});
 Object.assign(AGS,{mon:"По описанию школы (не проверено): творческие, музыкальные и спортивные AG, школьная фирма, школьные животные, личный iPad с 9 класса, Schullandheim в 5–6 классах, Betriebspraktikum.",wrs:"По описанию школы (не проверено): MINT-профиль, kreative AG, Fairtrade-школа, Individuelle Förderung по математике, немецкому и языкам, Methodentraining, Schulpastoral."});
 const ADM={gas:2.5,ohg:3,lgs:4,rot:4.5,dfg:3.5,ms:2.5,wgg:2.5,lp:4.5,bel:4.5,bru:5,wal:4,ess:1.5,mon:3,wrs:3.5};
-S.forEach(s=>{const m=MOVE[s.id]; s.s.move=m[0]; s.facts.push(["При переезде",m[1]]); s.facts.push(["Abitur в той же школе",ABI[s.id]]); s.s.abi=ABIS[s.id]; s.s.free=FREE[s.id][0]; s.facts.push(["Можно забрать раньше",FREE[s.id][1]]); s.s.open=OPEN[s.id][0]; s.facts.push(["Среда для мигрантов",OPEN[s.id][1]]); s.cvt=CV[s.id]; if(DATES[s.id]) s.facts.push(["Дни открытых дверей и подача документов (2027/28)",DATES[s.id]]); if(ART[s.id]) s.facts.push(["Кружки по художке (официальные списки школ)",ART[s.id]]); if(AGS[s.id]) s.facts.push(["Кружки и жизнь школы",AGS[s.id]]); if(MUS[s.id]) s.facts.push(["Музыка (справка, на оценки не влияет)",MUS[s.id]]); if(DEM[s.id]) s.facts.push(["Шанс попасть / здание (протоколы города)",DEM[s.id]]); s.facts.push(["Стоимость (ориентир)",costText(s.id)]); if(FR[s.id]) s.facts.push(["Друзья в этой школе",FR[s.id].join(", ")+" — можно спросить их родителей об атмосфере, математике и травле"]); s.facts.push(["Консервативность (гипотеза)",s.cvt+"/5: "+CVT[s.cvt]+". Оценена по типу школы, не по опросам родителей."]); s.s.route=ROUTE[s.id][0]; s.s.adm=ADM[s.id]; s.facts.push(["Дорога от дома",ROUTE[s.id][1]]);});
+S.forEach(s=>{const m=MOVE[s.id]; s.s.move=m[0]; s.facts.push(["При переезде",m[1]]); s.facts.push(["Abitur в той же школе",ABI[s.id]]); s.s.abi=ABIS[s.id]; s.s.free=FREE[s.id][0]; s.facts.push(["Можно забрать раньше",FREE[s.id][1]]); s.s.open=OPEN[s.id][0]; s.facts.push(["Среда для мигрантов",OPEN[s.id][1]]); s.cvt=CV[s.id]; if(ART[s.id]) s.facts.push(["Кружки по художке (официальные списки школ)",ART[s.id]]); if(AGS[s.id]) s.facts.push(["Кружки и жизнь школы",AGS[s.id]]); if(MUS[s.id]) s.facts.push(["Музыка (справка, на оценки не влияет)",MUS[s.id]]); if(DEM[s.id]) s.facts.push(["Шанс попасть / здание (протоколы города)",DEM[s.id]]); if(FR[s.id]) s.facts.push(["Друзья в этой школе",FR[s.id].join(", ")+" — можно спросить их родителей об атмосфере, математике и травле"]); s.facts.push(["Консервативность (гипотеза)",s.cvt+"/5: "+CVT[s.cvt]+". Оценена по типу школы, не по опросам родителей."]); s.s.route=ROUTE[s.id][0]; s.s.adm=ADM[s.id]; s.facts.push(["Дорога от дома",ROUTE[s.id][1]]);});
 
 const LS="schulwahl-weights-v1";
 let W={}; CRIT.forEach(c=>W[c.k]=c.w);
@@ -697,11 +729,13 @@ const TAB={};
 function bodyHtml(s){
   const t=TAB[s.id]||"pros";
   const n=ALLRV.filter(r=>r.s===s.id).length;
-  const tabs=[["pros","Плюсы и риски"],["score","Оценки"],["facts","Факты"],["rev","Отзывы ("+n+")"]];
+  const tabs=[["pros","Плюсы и риски"],["score","Оценки"],["dates","Даты"],["costs","Цены"],["facts","Факты"],["rev","Отзывы ("+n+")"]];
   const vn=(VID[s.id]||[]).length+(TTL[s.id]||[]).length;
   if(vn) tabs.push(["vid","Видео ("+vn+")"]);
   const hid=k=>k===t?"":" hidden";
   return `<div class="tabs" role="tablist" data-s="${s.id}">${tabs.map(([k,l])=>`<button type="button" role="tab" data-tab="${k}" aria-pressed="${k===t}">${l}</button>`).join("")}</div>
+      ${datesHtml(s.id,hid("dates"))}
+      ${costsHtml(s.id,hid("costs"))}
       <div class="tp" data-tab="facts"${hid("facts")}><div class="facts">${s.facts.map(f=>`<div class="fct"><span>${esc(f[0])}</span><p>${esc(f[1])}</p></div>`).join("")}</div>
         ${rankTable(s.id)}
         <p class="conf">Надёжность данных: ${s.conf}. <a href="${s.url}" target="_blank" rel="noopener">Сайт / источник ↗</a></p></div>
