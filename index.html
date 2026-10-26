@@ -157,7 +157,7 @@ summary{padding:6px 16px 6px 74px;font-size:13px}
     <h1>Какая школа подойдёт дочери</h1>
     
     <p class="note" style="margin:0;max-width:70ch">Баллы 1–5 по каждому критерию — моя оценка по данным schulen.de, сайтам школ и открытым источникам. Где данных мало, это отмечено. Двигайте ползунки: рейтинг пересчитывается под то, что важнее именно вам.</p>
-  <p class="note mono" id="upd" style="margin:0">Обновлено: 26.10.2026 13:23 (время Берлина)</p>
+  <p class="note mono" id="upd" style="margin:0">Обновлено: 26.10.2026 13:28 (время Берлина)</p>
   </header>
 
   <details class="panel wpanel" id="wdet"><summary><h2 id="wh" style="display:inline;margin:0">Что важнее: веса и фильтры</h2> <span class="note" id="wstate"></span> <button type="button" id="wreset2" hidden>вернуть по умолчанию</button></summary>
@@ -702,15 +702,15 @@ function gcol(g){return g<=2.2?"var(--good)":g<=3.5?"var(--mid)":"var(--bad)"}
 function verdict(p){return p>=72?["отлично подходит","var(--good)"]:p>=60?["стоит посмотреть","var(--mid)"]:["скорее нет","var(--bad)"]}
 const esc=t=>String(t).replace(/[&<>"]/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[m]));
 
-function timeline(r){
+function timeline(r,sid){
   const y0=2019,y1=2026,x=y=>20+(y-y0)*(280/(y1-y0));
   const gy=g=>8+(g-1)*(44/5); // grade 1 at top, 6 at bottom
-  let h=`<svg viewBox="0 0 320 78" role="img" aria-label="Отзывы по годам">`;
-  [1,3.5,6].forEach(g=>h+=`<line class="axis" x1="20" x2="300" y1="${gy(g)}" y2="${gy(g)}" stroke-dasharray="${g===3.5?'2 3':'0'}"/>`);
+  let h=`<svg viewBox="0 -10 350 90" role="img" aria-label="Отзывы по годам">`;
+  [1,3.5,6].forEach(g=>h+=`<line class="axis" x1="20" x2="340" y1="${gy(g)}" y2="${gy(g)}" stroke-dasharray="${g===3.5?'2 3':'0'}"/>`);
   h+=`<text x="2" y="${gy(1)+3}">1</text><text x="2" y="${gy(6)+3}">6</text>`;
-  for(let y=y0;y<=y1;y++) h+=`<text x="${x(y)}" y="74" text-anchor="middle">${String(y).slice(2)}</text>`;
+  for(let y=y0;y<=y1;y++) h+=`<text class="tlb" data-s="${sid}" data-y="${y}" x="${x(y)}" y="74" text-anchor="middle" style="cursor:pointer">${String(y).slice(2)}</text>`;
   r.forEach(([y,g,n])=>{const rr=Math.min(4+Math.sqrt(n)*1.6,15);
-    h+=`<circle cx="${x(y)}" cy="${gy(g)}" r="${rr}" fill="${gcol(g)}" fill-opacity=".85"/>`;
+    h+=`<g class="tlb" data-s="${sid}" data-y="${y}" style="cursor:pointer"><title>${y}: показать отзывы</title><circle cx="${x(y)}" cy="${gy(g)}" r="${Math.max(rr+3,10)}" fill="transparent"/><circle cx="${x(y)}" cy="${gy(g)}" r="${rr}" fill="${gcol(g)}" fill-opacity=".85" style="pointer-events:none"/></g>`;
     if(n>1) h+=`<text x="${x(y)+rr+3}" y="${gy(g)+3}">×${n}</text>`;});
   if(!r.length) h+=`<text x="160" y="36" text-anchor="middle">нет отзывов с оценкой</text>`;
   return h+`</svg>`;
@@ -902,7 +902,7 @@ function bodyHtml(s){
         <div><h4>Риски</h4><ul class="cons">${s.cons.map(x=>`<li>${esc(x)}</li>`).join("")}</ul></div></div></div>
       <div class="tp" data-tab="score"${hid("score")}><div class="bars">${CRIT.map(c=>`<div class="bar"><div style="display:flex;justify-content:space-between"><span title="${esc(c.n)}">${SHORT[c.k]}</span><span class="mono">${s.s[c.k]}</span></div><div class="t"><i style="width:${s.s[c.k]/5*100}%;background:${col(s.s[c.k])}"></i></div></div>`).join("")}</div></div>
       <div class="tp" data-tab="rev"${hid("rev")}>
-        <div class="timeline"><h4>Отзывы по годам (Note 1 — лучшая, 6 — худшая)</h4>${timeline(s.reviews)}<p>${esc(s.rnote)}</p></div>
+        <div class="timeline"><h4>Отзывы по годам (Note 1 — лучшая, 6 — худшая)</h4>${timeline(s.reviews,s.id)}<p>${esc(s.rnote)}</p></div>
         <div class="revs" data-s="${s.id}"></div></div>
       ${vn?`<div class="tp" data-tab="vid"${hid("vid")}>${VID[s.id]?`<h4>YouTube (концерты и школа): ${VID[s.id].length}</h4><ul class="vids">${VID[s.id].map(v=>`<li><a href="${v[1]}" target="_blank" rel="noopener">▶ ${esc(v[0])} ↗</a></li>`).join("")}</ul>`:""}${TTL[s.id]?`<h4 style="margin-top:12px">TikTok, неофициальные профили выпускных потоков: ${TTL[s.id].length}</h4><p class="note" style="margin:0 0 8px">${esc(TT[s.id])} Адреса от Gemini, не проверены, могут не открыться без входа.</p><ul class="vids">${TTL[s.id].map(h=>`<li><a href="https://www.tiktok.com/@${h}" target="_blank" rel="noopener">♪ @${h} ↗</a></li>`).join("")}</ul>`:""}</div>`:""}`;
 }
@@ -1081,7 +1081,7 @@ function paintSrv(id){
   if(!box)return;
   const st=SRV[id]||(SRV[id]={g:"all",n:20});
   const all=ALLRV.filter(r=>r.s===id);
-  const rows=all.filter(r=>st.g==="all"||(st.g==="good"&&r.num<=2.5)||(st.g==="mid"&&r.num>2.5&&r.num<4)||(st.g==="bad"&&r.num>=4));
+  const rows=all.filter(r=>(!st.y||r.y===st.y)&&(st.g==="all"||(st.g==="good"&&r.num<=2.5)||(st.g==="mid"&&r.num>2.5&&r.num<4)||(st.g==="bad"&&r.num>=4)));
   const btn=(g,l)=>`<button type="button" data-rv="${g}" data-s="${id}" aria-pressed="${st.g===g}">${l}</button>`;
   const shown=rows.slice(0,st.n);
   const left=rows.length-shown.length;
@@ -1089,6 +1089,7 @@ function paintSrv(id){
     +(all.length
       ?`<p class="note" style="margin:0 0 8px">Оценка 1 — лучшая, 6 — худшая (у golocal, Yelp, 11880, Google — звёзды 1–5). «Meta AI → …» — пересказ без ссылки на оригинал, не проверен. Google закрыл отзывы на карточках школ в апреле 2025, поэтому «Google» здесь — отзывы с соседних точек на карте.</p>`
        +`<div class="seg" style="margin-bottom:10px">${btn("all","Все")}${btn("good","Хорошие (до 2,5)")}${btn("mid","Средние")}${btn("bad","Плохие (от 4)")}</div>`
+       +(st.y?`<p class="note" style="margin:0 0 8px">Фильтр по году: <b>${st.y}</b> <button type="button" data-rv="year" data-s="${id}">показать все годы ×</button></p>`:"")
        +`<p class="note" style="margin:0 0 8px">Показано ${shown.length} из ${rows.length}</p>`
        +`<div class="rv" style="display:flex;flex-direction:column;gap:12px">${shown.map(rvItem).join("")||'<p class="note">Нет отзывов в этой категории.</p>'}</div>`
        +(left>0?`<button type="button" data-rv="more" data-s="${id}" style="margin-top:10px">Показать ещё ${Math.min(20,left)} (осталось ${left})</button>`:"")
@@ -1099,9 +1100,19 @@ document.getElementById("list").addEventListener("click",e=>{
   if(!b)return;
   const id=b.dataset.s;
   const st=SRV[id]||(SRV[id]={g:"all",n:20});
-  if(b.dataset.rv==="more"){st.n+=20;}else{st.g=b.dataset.rv;st.n=20;}
+  if(b.dataset.rv==="more"){st.n+=20;}else if(b.dataset.rv==="year"){st.y=null;st.n=20;}else{st.g=b.dataset.rv;st.n=20;}
   paintSrv(id);
   glossify(document.querySelector('.revs[data-s="'+id+'"]'));
+});
+document.getElementById("list").addEventListener("click",e=>{
+  const b=e.target.closest(".tlb");
+  if(!b)return;
+  const id=b.dataset.s,st=SRV[id]||(SRV[id]={g:"all",n:20});
+  st.y=+b.dataset.y;st.g="all";st.n=20;
+  paintSrv(id);
+  const box=document.querySelector('.revs[data-s="'+id+'"]');
+  glossify(box);
+  if(box&&box.scrollIntoView)box.scrollIntoView({behavior:"smooth",block:"nearest"});
 });
 const genBox=document.getElementById("genrv");
 if(genBox){
