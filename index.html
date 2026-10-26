@@ -141,6 +141,8 @@ summary{padding:6px 16px 6px 74px;font-size:13px}
 .ct{border-collapse:collapse;font-size:13px;min-width:760px;width:100%}
 .ct th,.ct td{padding:6px 10px 6px 0;border-bottom:1px solid var(--line);text-align:left;vertical-align:top}
 .ct th{font-size:11.5px;text-transform:uppercase;letter-spacing:.05em;color:var(--muted)}
+.gl{border-bottom:1px dotted var(--muted);cursor:help;position:relative}
+.gl:hover::after,.gl:focus::after,.gl.open::after{content:attr(data-tip);position:absolute;left:0;top:calc(100% + 4px);z-index:30;background:var(--paper);color:var(--ink);border:1px solid var(--accent);padding:6px 10px;border-radius:6px;font:400 12.5px/1.4 var(--f-body);font-style:normal;text-transform:none;letter-spacing:0;width:max-content;max-width:min(300px,80vw);white-space:normal;box-shadow:0 4px 14px rgba(0,0,0,.25)}
 @media (max-width:560px){
   .head{grid-template-columns:32px minmax(0,1fr) auto;gap:10px;padding:12px}
   .bars,.body{padding-left:12px;padding-right:12px}
@@ -155,7 +157,7 @@ summary{padding:6px 16px 6px 74px;font-size:13px}
     <h1>Какая школа подойдёт дочери</h1>
     
     <p class="note" style="margin:0;max-width:70ch">Баллы 1–5 по каждому критерию — моя оценка по данным schulen.de, сайтам школ и открытым источникам. Где данных мало, это отмечено. Двигайте ползунки: рейтинг пересчитывается под то, что важнее именно вам.</p>
-  <p class="note mono" id="upd" style="margin:0">Обновлено: 26.10.2026 13:09 (время Берлина)</p>
+  <p class="note mono" id="upd" style="margin:0">Обновлено: 26.10.2026 13:14 (время Берлина)</p>
   </header>
 
   <details class="panel wpanel" id="wdet"><summary><h2 id="wh" style="display:inline;margin:0">Что важнее: веса и фильтры</h2> <span class="note" id="wstate"></span> <button type="button" id="wreset2" hidden>вернуть по умолчанию</button></summary>
@@ -346,11 +348,11 @@ const S = [
   cons:["При переезде в другую землю будет сложно адаптироваться в новой обычной школе: другая программа, оценки и темп (по вашим словам), только в другой вальдорфской школе проще","6,5 км, но есть свой автобус, возможно от дома; нет Ganztag","Математика мягкая, отставание к Abitur потом догонять","Платная (взнос по доходу)"],
   url:"https://schulen.de/schulen/"},
  {id:"rot", name:"Gymnasium am Rotenbühl", type:"gym", tlabel:"Гимназия · Eliteschule des Sports", addr:"Neugrabenweg 66", km:"≈ 2 км",
-  s:{safe:3,math:3,art:2,dist:3.5,lang:3.5}, conf:"средняя",
+  s:{safe:3,math:3,art:2,dist:3.5,lang:4}, conf:"средняя",
   reviews:[[2024,1.0,1],[2025,1.0,1]], rtag:"два свежих отзыва, оба хвалят",
   rnote:"Один отзыв 11.2025: текст очень хвалит («много увлечённых учителей, много AG, рекомендую»), а оценка стоит 5,3. Скорее всего, это ошибка шкалы, поэтому в балле считаю её как 1,0. На golocal/Yelp в ноябре 2024 ещё один отзыв 5★ от родителя «четверо детей в билингвальном потоке, английский на высоте».",
-  facts:[["Ветки с 5 класса","Europazweig и Sportzweig (по тесту)"],["Языки","билингвальный английский с 7 класса"],["schulen.de","1 отзыв (2025)"],["Профиль","спорт"]],
-  pros:["Обычная Europa-ветка без спорта тоже есть","Свежий отзыв хвалит учителей и AG"],
+  facts:[["Ветки с 5 класса","языковое/европейское направление (Europazweig) и спортивное (Sportzweig, по тесту)"],["Языки","билингвальный английский с 7 класса"],["schulen.de","1 отзыв (2025)"],["Профиль","спорт и языки: билингвальный английский с 7 класса, Cambridge, Erasmus"]],
+  pros:["Есть языковое направление (Europazweig) без спортивной нагрузки: билингвальный английский с 7 класса, Cambridge, Erasmus (по сайту школы и вашим словам)","Свежий отзыв хвалит учителей и AG"],
   cons:["Культура школы спортивная, творческого профиля нет"],
   url:"https://www.rotenbuehlgym.de"},
  {id:"lgs", name:"Ludwigsgymnasium", type:"gym", tlabel:"Гимназия · старейшая в Саарланде", addr:"Stengelstraße 31 (Alt-Saarbrücken)", km:"≈ 2,5 км",
@@ -480,6 +482,28 @@ const CAL=[
  ["2027-03-05","пт 05.03.2027","государственные школы","Жеребьёвка (Losverfahren), если мест не хватает","по документам МБК"],
  ["2027-08-09","09.–10.08.2027","все","Первый учебный день 09.08.2027, не поданные документы до 10.08.2027","по данным школ"]
 ];
+const CENSRC=[["План Саарланда: сроки подачи документов (PDF)","https://www.saarland.de/SharedDocs/Downloads/DE/mbk/Bildungsserver/allgemeine-informationen/Termine_Gymnasien-Gemeinschaftsschulen.pdf?__blob=publicationFile&v=22"],["Regionalverband: Anmeldetermine","https://www.regionalverband-saarbruecken.de/bildung/anmeldetermine"]];
+const SRC={
+  gas:[["Termine школы (Infoabend, день открытых дверей, подача)","https://www.gymnasium-am-schloss.de/informationen-service/gut-zu-wissen/termine"],["FGTS (продлёнка)","https://www.gymnasium-am-schloss.de/unsere-schule/mehr-als-unterricht/freiwillige-ganztagsschule"]],
+  rot:[["Сайт школы (Infoabend, день открытых дверей)","https://www.rotenbuehlgym.de"],["Sportzweig: вопросы и тест","https://www.rotenbuehlgym.de/schulzweige/sportzweig/faqs"],["Время уроков","https://www.rotenbuehlgym.de/unterricht/unterrichtszeiten"]],
+  lgs:[["Страница с датами (Infoabend, день открытых дверей)","https://www.ludwigsgymnasium.com/schulleben/arbeitsgemeinschaften/arbeitsgemeinschaften-fremdsprachen-1"],["Время уроков","https://www.ludwigsgymnasium.com/lehren-und-lernen/unterrichtszeiten"],["Betreuung","https://www.ludwigsgymnasium.com/betreuung/konzept"]],
+  ohg:[["Termine школы","https://www.ohg-sb.de/schulleben/termine"],["Anmeldung am OHG","https://www.ohg-sb.de/gymnasium/schulprofil-1/anmeldung-am-ohg"],["Время уроков","https://www.ohg-sb.de/gymnasium/schulprofil-1/unterrichtszeiten"]],
+  dfg:[["Informationsveranstaltungen","https://dfg-lfa.org/termine/informationsveranstaltungen/"],["Infoabend 19.11.2026","https://dfg-lfa.org/2026/10/informationsabend-am-19-november-2026/"],["Schulalltag, время уроков","https://dfg-lfa.org/unsere-schule/schulalltag/"],["Учебные субботы","https://dfg-lfa.org/termine/schulsamstage/"]],
+  ms:[["Anmeldegespräche и приём","https://www.marienschule-sb.de/marienschule-ueber-uns/aufnahme/anmeldegespraeche"],["Сайт школы (новости, дни открытых дверей)","https://marienschule-sb.de/"],["Время уроков","https://www.marienschule-sb.de/unterrichtszeiten/"]],
+  wgg:[["Terminplaner Willi-Graf-Schulen 2026/27 (PDF)","https://www.willi-graf-schulen.de/realschule/wp-content/uploads/sites/4/2026/08/WGS-Terminplaner-2026-2027-v4.pdf"],["Сайт гимназии","https://www.willi-graf-schulen.de/gymnasium/"],["Продлёнка FGTS","https://www.willi-graf-schulen.de/gymnasium/freiwillige-ganztagsschule-2022/"]],
+  wrs:[["Terminplaner Willi-Graf-Schulen 2026/27 (PDF)","https://www.willi-graf-schulen.de/realschule/wp-content/uploads/sites/4/2026/08/WGS-Terminplaner-2026-2027-v4.pdf"],["Сайт Realschule","https://www.willi-graf-schulen.de/realschule/"]],
+  lp:[["Сайт школы (новости: день открытых дверей, регистрация)","https://gemsludwigspark.de/"],["Расписание дня","https://gemsludwigspark.de/schule/schule/unterricht/stundentafel"]],
+  bru:[["Сайт школы (новости, расписание звонков)","https://www.gems-bruchwiese.de/"],["FGTS","https://www.gems-bruchwiese.de/schule/fgts/"]],
+  bel:[["Профиль школы (Ganztag)","https://ganztaegig-lernen.de/wp-content/uploads/2024/10/Gemeinschaftsschule_Bellevue.pdf"]],
+  wal:[["Infothek школы","https://waldorfschulverein-saarbruecken.de/infothek-2/"],["Приём и Selbstverwaltung","https://waldorfschulverein-saarbruecken.de/selbstverwaltung/"],["Hort","https://waldorfschulverein-saarbruecken.de/unser-hort/"]],
+  mon:[["Сайт школы (может не открываться)","https://www.montessori.saarland"]],
+  ess:[["Сайт школы","https://www.europaeische-schule.saarland"],["Страница министерства о Ganztag","https://saarland.de/mbk/DE/portale/bildungsserver/schulen-und-bildungswege/europaeische-schule-saarland/ess-englisch/all-day-school"]]
+};
+function srcHtml(id){
+  const a=(SRC[id]||[]).concat(["gas","rot","lgs","ohg","dfg","lp","bel","bru"].includes(id)?CENSRC:[]);
+  if(!a.length)return "";
+  return `<p class="note" style="margin:10px 0 0"><b>Источники, где смотреть изменения:</b> ${a.map(x=>`<a href="${x[1]}" target="_blank" rel="noopener">${esc(x[0])} ↗</a>`).join(" · ")}</p>`;
+}
 function costsHtml(id,hidAttr){
   const c=COSTS[id];
   let tr;
@@ -504,11 +528,15 @@ function datesHtml(id,hidAttr){
     if(sc.startsWith("государственные"))return state.includes(id);
     return false;
   });
-  return `<div class="tp" data-tab="dates"${hidAttr}><h4>Дни открытых дверей и подача документов (приём 2027/28)</h4><p style="margin:0 0 10px;max-width:75ch;font-size:14px">${esc(DATES[id]||"Дат не найдено, звоните в школу.")}</p><div style="overflow-x:auto"><table class="ct" style="min-width:520px"><tr><th>Когда</th><th>Что</th><th>Примечание</th></tr>${rows.map(r=>`<tr><td class="mono"><b>${esc(r[1])}</b></td><td>${esc(r[3])}${r[2]!==(key[id]||"")&&!r[2].includes(key[id]||"~~")?`<br><span class="note">${esc(r[2])}</span>`:""}</td><td>${esc(r[4])}</td></tr>`).join("")}</table></div></div>`;
+  return `<div class="tp" data-tab="dates"${hidAttr}><h4>Дни открытых дверей и подача документов (приём 2027/28)</h4>${END[id]?`<p style="margin:0 0 8px;max-width:75ch;font-size:14px"><b>Конец уроков (когда приехать посмотреть детей):</b> ${esc(END[id])}</p>`:""}<p style="margin:0 0 10px;max-width:75ch;font-size:14px">${esc(DATES[id]||"Дат не найдено, звоните в школу.")}</p><div style="overflow-x:auto"><table class="ct" style="min-width:520px"><tr><th>Когда</th><th>Что</th><th>Примечание</th></tr>${rows.map(r=>`<tr><td class="mono"><b>${esc(r[1])}</b></td><td>${esc(r[3])}${r[2]!==(key[id]||"")&&!r[2].includes(key[id]||"~~")?`<br><span class="note">${esc(r[2])}</span>`:""}</td><td>${esc(r[4])}</td></tr>`).join("")}</table></div>${srcHtml(id)}</div>`;
 }
 function renderCal(){
   const box=document.getElementById("calbox"); if(!box)return;
   box.innerHTML=`<div style="overflow-x:auto"><table class="ct" style="min-width:680px"><tr><th>Когда</th><th>Школа</th><th>Что</th><th>Примечание</th></tr>${CAL.map(r=>`<tr><td class="mono"><b>${esc(r[1])}</b></td><td>${esc(r[2])}</td><td>${esc(r[3])}</td><td>${esc(r[4])}</td></tr>`).join("")}</table></div>
+  <h4 style="margin:14px 0 4px;font-size:12px;text-transform:uppercase;letter-spacing:.06em;color:var(--muted)">Где смотреть изменения (источники)</h4>
+  <p class="note" style="margin:0 0 8px;max-width:90ch">${CENSRC.map(x=>`<a href="${x[1]}" target="_blank" rel="noopener">${esc(x[0])} ↗</a>`).join(" · ")}<br>${["gas","rot","lgs","ohg","dfg","ms","wgg","wrs","lp","bru","wal","mon","ess"].map(id=>`<b>${esc(S.find(z=>z.id===id).name)}:</b> ${SRC[id].map(x=>`<a href="${x[1]}" target="_blank" rel="noopener">${esc(x[0])} ↗</a>`).join(", ")}`).join("<br>")}</p>
+  <h4 style="margin:14px 0 4px;font-size:12px;text-transform:uppercase;letter-spacing:.06em;color:var(--muted)">Когда приехать посмотреть детей</h4>
+  <p class="note" style="margin:0 0 8px;max-width:80ch">В будни у 5–6 классов 6-й урок кончается примерно в 13:10–13:20: Bruchwiese 13:10, DFG, Otto-Hahn и Rotenbühl 13:15, Marienschule и Ludwigsgymnasium 13:20. Приезжайте за 10–15 минут до этого времени. В школах с обязательным Ganztag (Ludwigspark, Europäische Schule, Montessori, Bellevue) дети выходят в 15–16 часов. У GemS Ludwigspark по средам уроки кончаются в 12:25. У Gymnasium am Schloss и Willi-Graf расписания звонков на сайте нет, уточните по телефону. Дни с ранним концом для 5–6 классов нигде не указаны.</p>
   <h4 style="margin:14px 0 4px;font-size:12px;text-transform:uppercase;letter-spacing:.06em;color:var(--muted)">Чего ещё нет</h4>
   <ul style="margin:0 0 8px;padding-left:20px;display:flex;flex-direction:column;gap:3px;font-size:13.5px">
     <li><b>Marienschule, GemS Ludwigspark, Bruchwiese, Bellevue, Montessori:</b> на 2027/28 даты пока не опубликованы. Для Marienschule и Ludwigspark в карточке указаны прошлогодние (Marienschule: день открытых дверей в середине января, собеседования с конца января до начала февраля). Для остальных нужно звонить.</li>
@@ -517,6 +545,22 @@ function renderCal(){
   </ul>
   <p class="note" style="margin:8px 0 0">Собрано 26.10.2026 с сайтов школ и официального плана Саарланда (Terminplanung 2026/27 от 18.08.2026). Школы Marienschule, GemS Ludwigspark, Bruchwiese, Bellevue и Montessori на 2027/28 пока не опубликовали даты, ориентируйтесь на прошлогодние (в карточках школ). Время и место проверяйте на сайте школы перед поездкой. Приходите к назначенной записи заранее: в большинстве государственных школ подача только по предварительной записи.</p>`;
 }
+const END={
+  wgg:"Расписания звонков на сайте не нашёл. Обед в продлёнке FGTS в 13:15, значит 6-й урок кончается примерно в 13:15 (косвенно), 7-й урок возможен. FGTS 13:15–17:00, Lernzeit 14:15–15:15.",
+  wrs:"Расписания звонков на сайте не нашёл. По продлёнке FGTS: обед в 13:15, значит уроки кончаются примерно в это время. FGTS 13:15–17:00.",
+  ms:"6-й урок кончается в 13:20. 7-й 13:40–14:25, 8-й до 15:15. Какие дни у 5–6 классов короче, на странице не сказано. Nachmittagsbetreuung 13:15–17:00.",
+  dfg:"6-й урок до 13:15. До 7 класса послеобеденных уроков нет (по сайту), значит дети выходят около 13:15. Betreuung 13:00–17:00. Есть учебные субботы, 18 в 2026/27 (для каких классов, не сказано).",
+  gas:"Расписания звонков на сайте нет (только в WebUntis). FGTS после уроков, до 15:20 или до 17:00. Время «7:30–14:30», которое попалось раньше, это часы работы секретариата, а не Ganztag.",
+  lgs:"6-й урок до 13:20, 7-й 13:35–14:20, 8-й до 15:10. Betreuung до 15:10 или до 17:00.",
+  ohg:"6-й урок до 13:15, 7-й 13:30–14:15, 8-й до 15:05. Nachmittagsbetreuung до 15:15 или до 17:00.",
+  rot:"6-й урок до 13:15, 7-й 13:30–14:15, 8-й до 15:00. Betreuung 12:30–17:00.",
+  lp:"Gebundener Ganztag, день до 16:00 (блоки до 15:00 и 15:00–16:00). В среду уроки кончаются в 12:25 (по картинке расписания на сайте). Для каких классов, не указано.",
+  bel:"Расписание звонков не нашёл (сайт недоступен). По профилю школы: gebundener Ganztag 8:00–16:00.",
+  bru:"6-й урок до 13:10, 7-й до 13:55. Hausaufgaben-Betreuung 14:00–15:00. FGTS 12:30–15:00 или 12:30–17:00.",
+  wal:"Расписания нет на сайте. День начинается около 8:00 с Hauptunterricht, конец уроков не указан. Hort 12:35–17:00, забирать можно в 14:15, 15:00, 16:00 или 17:00.",
+  mon:"Не нашёл, сайт не открылся. По справочнику gebundener Ganztag до 16:00.",
+  ess:"Уроки с 8:00 до 16:00, gebundener Ganztag (по странице министерства из выдачи поиска, саму страницу не открывал)."
+};
 const PUB={sg:"0",gt:"offen: необязательна, цена не найдена",meal:"не найдено (ориентир 4–6 €, по двум другим школам)",med:"160 €/год (LSMS с 2026/27)"};
 const COSTS={
   wgg:{sg:"Schulgeld не берут: на странице школы «Über uns» написано «Schulgeld wird nicht erhoben» (цитата из результатов поиска, саму страницу не открывал). Остальные платежи: Förderkreis (добровольный, в меру возможностей), продлёнка, обед, медиа-сбор. Уточнить в секретариате, возможно, есть Schulvertrag",gt:"необязательна, если школа рядом (можно не брать). Если брать: 30 €/мес до 15:15 (с ДЗ), 60 €/мес до 17:00, платится 12 месяцев",meal:"4,10 €",med:"160 €/год, если школа участвует в LSMS (не найдено)"},
@@ -725,6 +769,102 @@ function renderMap(){
   const legend=`<ol style="margin:10px 0 0;padding-left:22px;display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:4px 18px;font-size:13.5px">${all.map(({s,p})=>`<li><a href="${gmap(COORD[s.id],s.name+" Saarbrücken")}" target="_blank" rel="noopener">${esc(s.name)}</a> <span class="mono">${p}%</span>${inb(COORD[s.id])?"":" <span class=\"note\">(за пределами карты, около 15 км)</span>"}</li>`).join("")}</ol>`;
   box.innerHTML=svg+`<p class="note" style="margin:8px 0 0">Цвет точки показывает «подходит»: зелёный от 72 %, жёлтый 60–71 %, красный ниже. Номер — место в рейтинге при ваших весах. Линии: толстые — главные улицы и шоссе, пунктир — железная дорога, синяя линия — трамвай Saarbahn, широкая полупрозрачная — река Саар. Это упрощённая карта по данным OpenStreetMap, без подписей улиц: сторонние карты на странице не открываются. Расстояния по прямой. Hbf — главный вокзал. Нажмите точку или название, чтобы открыть школу в Google Maps (там можно проверить маршрут).</p>`+legend;
 }
+const GLOS={
+ "Sprachförderung":"дополнительная поддержка немецкого языка для детей, у которых он не родной",
+ "NanoBioLab":"школьная лаборатория Университета Саарланда, где школьники проводят опыты по нано- и биотехнологиям",
+ "MINT":"математика, информатика, естественные науки и техника: профиль школы с упором на точные науки",
+ "Förderunterricht":"дополнительные занятия для тех, кто отстаёт по предмету",
+ "Individuelle Förderung":"индивидуальная поддержка: программы и занятия для сильных и для слабых учеников; рейтинг считает количество программ, а не качество помощи",
+ "Begabtenförderung":"поддержка одарённых детей",
+ "LemaS":"федеральная программа «Leistung macht Schule» для способных детей",
+ "gebundener Ganztag":"обязательная учёба и занятия до 15–16 часов для всех учеников",
+ "gebunden":"обязательный для всех (учёба до 15–16 ч)",
+ "teilgebunden":"обязательный только в часть дней",
+ "offener Ganztag":"добровольная продлёнка, можно не брать",
+ "offen":"добровольный (можно забрать ребёнка раньше)",
+ "Ganztagsangebot":"продлёнка и занятия после уроков",
+ "Ganztag":"школа с занятиями и присмотром до 15–17 часов",
+ "FGTS":"добровольная продлёнка (Freiwillige Ganztagsschule): присмотр, домашние задания, кружки",
+ "Hort":"послешкольный присмотр за детьми",
+ "Betreuung":"присмотр за детьми после уроков",
+ "Nachmittagsbetreuung":"присмотр после уроков, обычно до 15–17 часов",
+ "Lernzeit":"время в школе для домашних заданий под присмотром учителя",
+ "Losverfahren":"жеребьёвка, если заявлений больше, чем мест",
+ "Aufnahmekommission":"приёмная комиссия школы",
+ "Entwicklungsbericht":"описательная характеристика ребёнка из начальной школы",
+ "Schullaufbahnempfehlung":"рекомендация учителя начальной школы о типе школы (не обязательна, решают родители)",
+ "Halbjahreszeugnis":"табель за первое полугодие 4 класса, нужен при подаче документов",
+ "Oberstufe":"старшая ступень, 11–13 классы, ведёт к Abitur",
+ "Abitur":"аттестат зрелости, право поступать в университет",
+ "Mittlerer Bildungsabschluss":"аттестат после 10 класса (бывший Realschulabschluss)",
+ "Gemeinschaftsschule":"школа в Саарланде, объединившая Realschule и Hauptschule; ведёт до Mittlerer Abschluss или до Abitur",
+ "Realschule":"школа до 10 класса; в Саарланде бывает только частная",
+ "Gymnasium":"гимназия: путь к Abitur за 9 лет (G9), требования выше",
+ "G9":"девятилетняя гимназия до Abitur",
+ "AbiBac":"двойной диплом: немецкий Abitur и французский Baccalauréat",
+ "LSMS":"общая в Саарланде система учебников и цифровых материалов, сбор 160 € в год на ученика",
+ "Schulgeld":"плата за обучение",
+ "Förderkreis":"родительский фонд школы, взнос добровольный",
+ "Förderverein":"родительский фонд школы, взнос добровольный",
+ "Paten":"старшие школьники-наставники для новичков",
+ "Streitschlichter":"ученики-посредники, помогающие разбирать конфликты",
+ "Mediatoren":"ученики-посредники, помогающие разбирать конфликты",
+ "Quereinstieg":"поступление не в первый класс, а позже, если есть свободное место",
+ "Musikzweig":"ветка с усиленной музыкой",
+ "Europazweig":"ветка с европейским профилем",
+ "Sportzweig":"ветка с углублённым спортом, приём по спортивному тесту",
+ "Eliteschule des Sports":"школа для юных спортсменов с гибким графиком",
+ "Schulbuchausleihe":"аренда учебников у школы",
+ "Tag der offenen Tür":"день открытых дверей",
+ "Infoabend":"информационный вечер для родителей",
+ "Infovormittag":"информационное утро для родителей и детей",
+ "Anmeldegespräche":"собеседования при записи в школу",
+ "Beratungsgespräche":"обязательная консультация в начальной школе, решение остаётся за родителями",
+ "Schulvertrag":"договор между родителями и частной школой",
+ "DaZ":"Deutsch als Zweitsprache: немецкий как второй язык",
+ "Kunst & Kreativ":"категория schulen.de про художественные программы школы",
+ "Textiles Gestalten":"рукоделие и работа с тканью",
+ "Werken":"труд, работа с материалами руками",
+ "Digitale Schule":"категория про цифровые технологии в школе",
+ "Mensa":"школьная столовая",
+ "Jugend forscht":"конкурс юных исследователей",
+ "Cambridge":"подготовка к экзаменам Cambridge по английскому",
+ "Erasmus+":"программа обменов и проектов Евросоюза",
+ "Vivarium":"живой уголок с животными",
+ "Schulsanitätsdienst":"школьники-санитары, оказывающие первую помощь",
+ "Tabletpaten":"школьники-помощники по планшетам",
+ "Kletter-AG":"кружок скалолазания",
+ "Kreativkritzelclub":"кружок рисования и творчества",
+ "Zirkus":"цирковой кружок",
+ "Lehrer":"учителя",
+ "AG":"Arbeitsgemeinschaft: школьный кружок",
+ "Notenschnitt":"средний балл",
+ "Sprachzertifikat":"языковой сертификат"
+};
+const GLRE=new RegExp("(?<![\\p{L}\\p{N}-])("+Object.keys(GLOS).filter(k=>k!=="Lehrer").sort((a,b)=>b.length-a.length).map(k=>k.replace(/[.*+?^${}()|[\]\\]/g,"\\$&")).join("|")+")(?![\\p{L}\\p{N}])","giu");
+const GLRE1=new RegExp(GLRE.source,"iu");
+const GLLOW={};Object.keys(GLOS).forEach(k=>{GLLOW[k.toLowerCase()]=GLOS[k]});
+function glossify(root){
+  if(!root||!document.createTreeWalker)return;
+  const skip=new Set(["A","BUTTON","SCRIPT","STYLE","SVG","TEXT","ABBR","SELECT","OPTION","INPUT","TEXTAREA","TITLE","SUMMARY","H2","H3"]);
+  const w=document.createTreeWalker(root,4,{acceptNode:n=>{
+    for(let p=n.parentNode;p&&p!==root;p=p.parentNode){if(skip.has(p.nodeName.toUpperCase())||(p.classList&&p.classList.contains("gl")))return 2;}
+    return GLRE1.test(n.nodeValue)?1:2;}});
+  GLRE.lastIndex=0;
+  const nodes=[];while(w.nextNode())nodes.push(w.currentNode);
+  nodes.forEach(n=>{
+    GLRE.lastIndex=0;
+    const t=n.nodeValue,frag=document.createDocumentFragment();let last=0,m;
+    while((m=GLRE.exec(t))){
+      frag.appendChild(document.createTextNode(t.slice(last,m.index)));
+      const sp=document.createElement("span");sp.className="gl";sp.tabIndex=0;sp.dataset.tip=GLLOW[m[1].toLowerCase()]||"";sp.textContent=m[1];frag.appendChild(sp);
+      last=m.index+m[1].length;
+    }
+    frag.appendChild(document.createTextNode(t.slice(last)));
+    n.parentNode.replaceChild(frag,n);
+  });
+}
+document.addEventListener("click",e=>{const g=e.target.closest&&e.target.closest(".gl");document.querySelectorAll&&document.querySelectorAll(".gl.open").forEach(x=>{if(x!==g)x.classList.remove("open")});if(g)g.classList.toggle("open");});
 const TAB={};
 function bodyHtml(s){
   const t=TAB[s.id]||"pros";
@@ -776,6 +916,7 @@ function renderList(){
     <div class="body">${bodyHtml(s)}</div>
   </article>`}).join("");
   rows.forEach(({s})=>paintSrv(s.id));
+  glossify(document.getElementById("list"));
 }
 document.getElementById("filter").addEventListener("click",e=>{const b=e.target.closest("button");if(!b)return;F=b.dataset.f;
   document.querySelectorAll("#filter button").forEach(x=>x.setAttribute("aria-pressed",x===b));renderList();});
@@ -886,7 +1027,7 @@ const MT="Meta AI → ";
 addRv("dfg","2024","позитив","анонимно (6 отзывов)",MT+"Google Places (не проверено, сомнительно)","","4,3 звезды, «бикультурная школа, отличная языковая подготовка». Сомнительно: по данным Gemini, отзывы на карточках школ в Google закрыты с апреля 2025.");
 addRv("dfg","2024","нейтрально","русскоязычные родители",MT+"Facebook-группа «Русские в Saarbrücken» (пересказ, не проверено)","","Сильная нагрузка, много домашки, но лучший французский и двойной диплом Abibac (DE+FR).");
 addRv("lgs","2023","нейтрально","родитель",MT+"русскоязычные форумы (пересказ, не проверено)","","Хвалят за дисциплину и подготовку к университету, критикуют старое здание и отсутствие современного спортзала.");
-addRv("gas","2022","нейтрально","—",MT+"stayfriends (не проверено)","","Первый Musikzweig в Saarland с 2001 года, сильный MINT, около 700 учеников, Ganztag 7:30–14:30, много домашки в музыкальном классе.");
+addRv("gas","2022","нейтрально","—",MT+"stayfriends (не проверено)","","Первый Musikzweig в Saarland с 2001 года, сильный MINT, около 700 учеников, 7:30–14:30 — часы секретариата, а не Ganztag, много домашки в музыкальном классе.");
 addRv("gas","2025","позитив","школа (официальный пост)",MT+"Instagram школы (это не отзыв, а описание внеклассного)","","Кружки (AG): Physik-AG, Bio-AG, оркестр, Kletter-AG, театр, Textiles Gestalten (рукоделие); сертификаты Cambridge, экскурсии; Schulfest с French Café и Escape Room.");
 addRv("wgg","2023","позитив","родители",MT+"Google Places (не проверено, сомнительно)","","Частная католическая, малые классы, внимание к ребёнку. Данные расходятся: число учеников «750–779» против 657 на schulen.de.");
 addRv("wgg","2024","нейтрально","русскоязычные родители",MT+"русскоязычные чаты (пересказ, не проверено)","","Выбирают осознанно за внимание к детям-мигрантам, поддержка DaZ, дисциплина, но «платно и религия». (У других источников школы Bistum Trier «без платы за обучение» — проверить.)");
@@ -941,6 +1082,7 @@ document.getElementById("list").addEventListener("click",e=>{
   const st=SRV[id]||(SRV[id]={g:"all",n:20});
   if(b.dataset.rv==="more"){st.n+=20;}else{st.g=b.dataset.rv;st.n=20;}
   paintSrv(id);
+  glossify(document.querySelector('.revs[data-s="'+id+'"]'));
 });
 const genBox=document.getElementById("genrv");
 if(genBox){
@@ -956,6 +1098,7 @@ document.getElementById("list").addEventListener("click",e=>{
   body.querySelectorAll(".tp").forEach(p=>{p.hidden=p.dataset.tab!==b.dataset.tab});
 });
 renderCost();renderCal();
+glossify(document.getElementById("costbox"));glossify(document.getElementById("calbox"));
 renderWeights();renderList();
 </script>
 
