@@ -25,7 +25,8 @@
   --bg:#11152a; --grid:#1a2040; --paper:#181e38; --ink:#e7ebf7; --muted:#9aa4c4; --line:#2a3358;
   --accent:#8ea2ff; --accent-soft:#232c55; --margin:#ff7a72; --good:#4fcf8c; --mid:#e7b54a; --bad:#ff7a72; color-scheme:dark}
 *{box-sizing:border-box}
-body{background:var(--bg);color:var(--ink);font-family:var(--f-body);font-size:15px;line-height:1.5;
+body{background:var(--bg);color:var(--ink);font-family:var(--f-body);font-size:15px;line-height:1.5}
+body::before{content:"";position:fixed;inset:0;z-index:-1;pointer-events:none;
   background-image:linear-gradient(var(--grid) 1px,transparent 1px),linear-gradient(90deg,var(--grid) 1px,transparent 1px);
   background-size:22px 22px}
 .wrap{max-width:1040px;margin:0 auto;padding-block:28px 60px;
@@ -179,7 +180,7 @@ details[open] summary::before{content:"− "}
       .rv details>summary{padding:10px 14px;display:flex;justify-content:space-between;gap:10px;color:var(--ink);font-weight:600}
       .rv summary small{font-weight:400;color:var(--muted)}
       .rv .items{display:flex;flex-direction:column;gap:10px;padding:0 14px 14px}
-      .rv .it{border-left:3px solid var(--line);padding-left:10px;font-size:14px}
+      .rv .it{border-left:3px solid var(--line);padding-left:10px;font-size:14px;content-visibility:auto;contain-intrinsic-size:auto 90px}
       .rv .it b{font-family:var(--f-mono);font-variant-numeric:tabular-nums}
       .rv .it .m{color:var(--muted);font-size:12.5px}
       .rv .it q{display:block;color:var(--muted);font-size:12.5px;font-style:italic;margin-top:2px}
