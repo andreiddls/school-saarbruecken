@@ -141,8 +141,8 @@ summary{padding:6px 16px 6px 74px;font-size:13px}
 .ct{border-collapse:collapse;font-size:13px;min-width:760px;width:100%}
 .ct th,.ct td{padding:6px 10px 6px 0;border-bottom:1px solid var(--line);text-align:left;vertical-align:top}
 .ct th{font-size:11.5px;text-transform:uppercase;letter-spacing:.05em;color:var(--muted)}
-.gl{border-bottom:1px dotted var(--muted);cursor:help;position:relative}
-.gl:hover::after,.gl:focus::after,.gl.open::after{content:attr(data-tip);position:absolute;left:0;top:calc(100% + 4px);z-index:30;background:var(--paper);color:var(--ink);border:1px solid var(--accent);padding:6px 10px;border-radius:6px;font:400 12.5px/1.4 var(--f-body);font-style:normal;text-transform:none;letter-spacing:0;width:max-content;max-width:min(300px,80vw);white-space:normal;box-shadow:0 4px 14px rgba(0,0,0,.25)}
+.gl{border-bottom:1px dotted var(--muted);cursor:help}
+#gltip{position:fixed;z-index:1000;pointer-events:none;background:var(--paper);color:var(--ink);border:1px solid var(--accent);padding:6px 10px;border-radius:6px;font:400 12.5px/1.4 var(--f-body);width:max-content;max-width:min(300px,86vw);box-shadow:0 4px 14px rgba(0,0,0,.3);display:none}
 @media (max-width:560px){
   .head{grid-template-columns:32px minmax(0,1fr) auto;gap:10px;padding:12px}
   .bars,.body{padding-left:12px;padding-right:12px}
@@ -157,7 +157,7 @@ summary{padding:6px 16px 6px 74px;font-size:13px}
     <h1>Какая школа подойдёт дочери</h1>
     
     <p class="note" style="margin:0;max-width:70ch">Баллы 1–5 по каждому критерию — моя оценка по данным schulen.de, сайтам школ и открытым источникам. Где данных мало, это отмечено. Двигайте ползунки: рейтинг пересчитывается под то, что важнее именно вам.</p>
-  <p class="note mono" id="upd" style="margin:0">Обновлено: 26.10.2026 13:16 (время Берлина)</p>
+  <p class="note mono" id="upd" style="margin:0">Обновлено: 26.10.2026 13:23 (время Берлина)</p>
   </header>
 
   <details class="panel wpanel" id="wdet"><summary><h2 id="wh" style="display:inline;margin:0">Что важнее: веса и фильтры</h2> <span class="note" id="wstate"></span> <button type="button" id="wreset2" hidden>вернуть по умолчанию</button></summary>
@@ -864,7 +864,25 @@ function glossify(root){
     n.parentNode.replaceChild(frag,n);
   });
 }
-document.addEventListener("click",e=>{const g=e.target.closest&&e.target.closest(".gl");document.querySelectorAll&&document.querySelectorAll(".gl.open").forEach(x=>{if(x!==g)x.classList.remove("open")});if(g)g.classList.toggle("open");});
+(function(){
+  let tip=null,cur=null;
+  function el(){if(!tip){tip=document.createElement("div");tip.id="gltip";tip.setAttribute("role","tooltip");document.body.appendChild(tip);}return tip;}
+  function show(g){
+    const t=el();t.textContent=g.dataset.tip||"";t.style.display="block";cur=g;
+    const r=g.getBoundingClientRect(),w=t.offsetWidth,h=t.offsetHeight;
+    let left=Math.min(Math.max(8,r.left),window.innerWidth-w-8);
+    let top=r.bottom+6;
+    if(top+h>window.innerHeight-8)top=Math.max(8,r.top-h-6);
+    t.style.left=left+"px";t.style.top=top+"px";
+  }
+  function hide(){if(tip)tip.style.display="none";cur=null;}
+  document.addEventListener("mouseover",e=>{const g=e.target.closest&&e.target.closest(".gl");if(g)show(g);});
+  document.addEventListener("mouseout",e=>{const g=e.target.closest&&e.target.closest(".gl");if(g&&!(e.relatedTarget&&g.contains(e.relatedTarget)))hide();});
+  document.addEventListener("focusin",e=>{const g=e.target.closest&&e.target.closest(".gl");if(g)show(g);});
+  document.addEventListener("focusout",hide);
+  document.addEventListener("click",e=>{const g=e.target.closest&&e.target.closest(".gl");if(g&&cur!==g)show(g);else if(!g||cur===g)hide();});
+  window.addEventListener("scroll",hide,{passive:true});
+})();
 const TAB={};
 function bodyHtml(s){
   const t=TAB[s.id]||"pros";
